@@ -1,0 +1,11 @@
+C:\Users\Kristijan\source\repos\mBillsTest\mBillsTests\obj\Debug\mBillsTests.csprojResolveAssemblyReference.cache
+C:\Users\Kristijan\source\repos\mBillsTest\mBillsTests\obj\Debug\mBillsTests.csproj.CoreCompileInputs.cache
+C:\Users\Kristijan\source\repos\mBillsTest\mBillsTests\bin\Debug\mBillsTests.exe.config
+C:\Users\Kristijan\source\repos\mBillsTest\mBillsTests\bin\Debug\mBillsTests.exe
+C:\Users\Kristijan\source\repos\mBillsTest\mBillsTests\bin\Debug\mBillsTests.pdb
+C:\Users\Kristijan\source\repos\mBillsTest\mBillsTests\bin\Debug\mBillsTest.exe
+C:\Users\Kristijan\source\repos\mBillsTest\mBillsTests\bin\Debug\mBillsTest.pdb
+C:\Users\Kristijan\source\repos\mBillsTest\mBillsTests\bin\Debug\mBillsTest.exe.config
+C:\Users\Kristijan\source\repos\mBillsTest\mBillsTests\obj\Debug\mBillsTests.csproj.CopyComplete
+C:\Users\Kristijan\source\repos\mBillsTest\mBillsTests\obj\Debug\mBillsTests.exe
+C:\Users\Kristijan\source\repos\mBillsTest\mBillsTests\obj\Debug\mBillsTests.pdb
