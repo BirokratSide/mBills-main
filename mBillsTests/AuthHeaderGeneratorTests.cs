@@ -59,7 +59,7 @@ namespace mBillsTests
 
         // is the hashed password hashed into something sensible
         private void testHashedPassword() {
-            Console.WriteLine(testedGenerator.getAuthorizationString(requestUrl));
+            Console.WriteLine(testedGenerator.getAuthenticationHeaderValue(requestUrl).ToString());
         }
 
     }
