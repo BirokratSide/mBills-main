@@ -2,11 +2,32 @@
 
 ## Todos:
 
-- Finish the HTTP client to actually be able to create requests to the server.
+#### phase 1 (mock environment)
+- Finish the HTTP client to be able to call their API
+	- Implement the authorization as prescribed **OK**
+	- Create an API class, which will implement the method calls to their API **IN PROGRESS**
+- Try the rest of the calls to the fake API.
+- **Implement the Point-of-sale quick payment transaction flow**
+- Test this transaction flow on their mock service.
+- Learn how to subscribe to the WebHooks that are triggered by their API calls.
+- Verify whether also the webhooks are testable on their mock services.
+
+#### phase 2 (production environemt)
+- Implement, verify and test all of the features that you have tested in the mock environment in their actual production environment.
+- Ask them for the actual apiKey, secretKey and production api path. Also ask about the consequences of tampering with production. Are there any test servers?
+
+#### phase 3
+- **Learn how to verify whether their response is correct by verifying their API key.**
+- This will involve their production public key, which they will deliver when we sign the contract.
 
 ## Open questions
 
+- Problem: I can use any apiKey and secretKey and the test url will return that the call was correct?
+	- It seems that the calls are just a mock api - whatever the apiKey and secret will be, the result will be the same.
+
 - Can I recieve test apiKey, secretKey to have my way around the application?
+	- Also I will need the real api root path!
+	- Will the api calls have any real consequences?
 
 - Most of the payment status updates are sent via webhooks which is a single URL configured for your API key. Where can I get this URL? Are there standard libraries for languages that can be used to connect to the webhook?
 
