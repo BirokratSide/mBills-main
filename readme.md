@@ -12,13 +12,47 @@
 - Learn how to subscribe to the WebHooks that are triggered by their API calls.
 - Verify whether also the webhooks are testable on their mock services.
 
-#### phase 2 (production environemt)
+#### phase 2 (production environment)
 - Implement, verify and test all of the features that you have tested in the mock environment in their actual production environment.
 - Ask them for the actual apiKey, secretKey and production api path. Also ask about the consequences of tampering with production. Are there any test servers?
 
 #### phase 3
 - **Learn how to verify whether their response is correct by verifying their API key.**
 - This will involve their production public key, which they will deliver when we sign the contract.
+
+## Vprasanja
+
+#### Testno okolje
+
+- Na testnem serverju bo pravilen odgovor vrnjen za vsak api-key ali secret-key. 
+- Zato ne morem testirat, ce pravilno izracunam credentiale.
+- Pod 'reference' so opisi vsake metode. In pod specifikacijo requesta v teh metodah sta navedena tudi primer secretkey, username in password, ceprav metode delajo s poljubnimi temi parameteri. Sem morda spregledal kaj, ali so te sampli tam samo zato ta bralec vidi v kaksnem formatu so naceloma te parametri?
+
+- Imate kaksen testni streznik oz neko okolje, kjer lahko testiram brez posledic ce kaj zafrknem? Lahko to tudi v produkciji? Prosim za apiPath, apiKey in secretKey.
+
+#### Webhooks
+
+- Omenite, da se vecina status updejtov poslje preko webhookov, ki so en URL konfiguriran za tvoj API key. 
+- V mock strezniku so vsi odgovori instantni, torej verjetno tega tukaj ni?
+- Lahko to stestiram samo v produkciji?
+- Kako pa se potem povezem na webhooke?
+
+#### Verifikacija responsa
+
+- Pravite da signate response in webhooke z SHA256withRSA (OID: 1.2.840.113549.1.1.11).
+- To me pripelje do RFC 4055, kjer sta (nagnusno) predstavljena RSASSA-PSS, RSAES-OAEP.
+- So detajli tega kar je treba narest v RFC 4055.
+
+- Je to morda precej enostavno? @resitev
+	- Pogledam njihov podpis
+	- pri meni: hash = SHA1(apikey, nonce, timestamp + tid)
+	- RSA^-1(podpis)
+	- hash =? RSA^-1(podpis)
+	- Slisi se simple in elegantno, ampak ne pozabi da nimam nonce, timestamp in tid!!!
+
+- Ali se za produkcijo od vas dobi prav nek certifikat, ali je le javni kljuc?
+
+
 
 ## Open questions
 
@@ -30,8 +64,6 @@
 	- Will the api calls have any real consequences?
 
 - Most of the payment status updates are sent via webhooks which is a single URL configured for your API key. Where can I get this URL? Are there standard libraries for languages that can be used to connect to the webhook?
-
-- I don't understand how to correctly verify the response.
 
 - Decorator pattern comes in handy every once in a while - check it out in free time.
 
@@ -54,6 +86,12 @@ You need to receive ```apikey``` and ```secretkey```. ```secretkey``` is very va
 - Also in the documentation.
 		
 ## Documentation
+
+### Verification of responses
+
+
+
+## Their explainations
 
 ## Payments in trgovniske dejavnosti
 
