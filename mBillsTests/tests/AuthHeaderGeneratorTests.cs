@@ -9,6 +9,7 @@ namespace mBillsTests
 {
     class AuthHeaderGeneratorTests
     {
+        /*
         // globals
         AuthHeaderGenerator testedGenerator;
         string apiKey;
@@ -61,6 +62,7 @@ namespace mBillsTests
         private void testHashedPassword() {
             Console.WriteLine(testedGenerator.getAuthenticationHeaderValue(requestUrl).ToString());
         }
-
+        */
     }
+    
 }

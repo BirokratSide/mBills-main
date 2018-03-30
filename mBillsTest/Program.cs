@@ -12,18 +12,33 @@ namespace mBillsTest
     public class Program
     {
 
-        static string apiKey = "kurac";
-        static string secretKey = "kurac";
+        static string apiRootPath = "https://private-anon-68d8958991-mbillsquickpaymentapi.apiary-mock.com";
+        static string apiKey = "example-apikey";
+        static string secretKey = "example-secretkey";
+        static string publicKeyFile = "mbills-server-public-key.txt";
+        static string workingDirectory = @"C:\Users\Kristijan\Desktop\playground\mBillsTest";
         static APICalls api;
 
         // logic
         static void Main(string[] args)
         {
+            setDirectoryToRootFolder();
 
-            api = new APICalls(apiKey, secretKey);
+            api = new APICalls(apiRootPath, apiKey, secretKey);
             api.testWebHookConnection();
 
             Console.ReadLine();
+        }
+
+        private static void setDirectoryToRootFolder() {
+            try
+            {
+                Directory.SetCurrentDirectory(workingDirectory);
+            }
+            catch (DirectoryNotFoundException e) {
+                
+                Console.WriteLine("The specified directory does not exist. {0}", e);
+            }
         }
 
     }

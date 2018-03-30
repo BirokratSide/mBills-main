@@ -14,34 +14,38 @@ namespace mBillsTest
     APICalls's public methods will call the mBills API. At instantiation, it also knows by itself how to set the authorization
     headers for the calls.
     */
-    class APICalls
+    public class APICalls
     {
+        string apiRootPath = "";
         AuthHeaderGenerator authGen;
         HttpClient httpClient;
 
-        public APICalls(string apiKey, string secretKey) {
+
+        public APICalls(string apiRootPath, string apiKey, string secretKey) {
             authGen = new AuthHeaderGenerator(apiKey, secretKey);
             httpClient = new HttpClient();
+            this.apiRootPath = apiRootPath;
         }
 
-        public void setAuthenticationHeader(string url) {
-            httpClient.DefaultRequestHeaders.Authorization = authGen.getAuthenticationHeaderValue(url);
+        public string testConnection() {
+            return simpleGet(this.apiRootPath + "/API/v1/system/test").GetAwaiter().GetResult();
         }
 
-        public async void testConnection() {
-            simpleGet("http://private-anon-68d8958991-mbillsquickpaymentapi.apiary-mock.com/API/v1/system/test");
-        }
-
-        public async void testWebHookConnection() {
-            simpleGet("https://private-anon-68d8958991-mbillsquickpaymentapi.apiary-mock.com/API/v1/system/testwebhook");
+        public string testWebHookConnection() {
+            return simpleGet(this.apiRootPath + "/API/v1/system/testwebhook").GetAwaiter().GetResult();
         }
 
         #region [auxiliary]
-        private async void simpleGet(string url) {
+        private void setAuthenticationHeader(string url)
+        {
+            httpClient.DefaultRequestHeaders.Authorization = authGen.getAuthenticationHeaderValue(url);
+        }
+
+        private async Task<string> simpleGet(string url) {
             setAuthenticationHeader(url);
 
             string response = await httpClient.GetStringAsync(url);
-            Console.WriteLine(response);
+            return response;
         }
         #endregion
     }

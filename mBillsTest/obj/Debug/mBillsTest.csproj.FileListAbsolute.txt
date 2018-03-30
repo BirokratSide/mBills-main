@@ -5,3 +5,5 @@ C:\Users\Kristijan\source\repos\mBillsTest\mBillsTest\obj\Debug\mBillsTest.cspro
 C:\Users\Kristijan\source\repos\mBillsTest\mBillsTest\obj\Debug\mBillsTest.csproj.CoreCompileInputs.cache
 C:\Users\Kristijan\source\repos\mBillsTest\mBillsTest\obj\Debug\mBillsTest.exe
 C:\Users\Kristijan\source\repos\mBillsTest\mBillsTest\obj\Debug\mBillsTest.pdb
+C:\Users\Kristijan\source\repos\mBillsTest\mBillsTest\bin\Debug\BouncyCastle.Crypto.dll
+C:\Users\Kristijan\source\repos\mBillsTest\mBillsTest\obj\Debug\mBillsTest.csproj.CopyComplete

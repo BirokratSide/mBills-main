@@ -8,7 +8,7 @@ using System.Net.Http.Headers;
 
 namespace mBillsTest
 {
-    public class AuthHeaderGenerator
+    class AuthHeaderGenerator
     {
 
         // user variables
@@ -23,11 +23,18 @@ namespace mBillsTest
         public AuthenticationHeaderValue getAuthenticationHeaderValue(string requestUrl) {
             // mBills' method of authorization is done by the Basic access authentication http standard - you
             // need to encode the username and password by base64 and then send it. It's the simplest method.
+            string username = getUsername();
+            string password = getPassword(requestUrl);
             string base64encodedUserAndPass = Convert.ToBase64String(
                                                     System.Text.ASCIIEncoding.ASCII.GetBytes(
-                                                    string.Format("{0}:{1}", getUsername(), getPassword(requestUrl))));
+                                                    string.Format("{0}:{1}", username, password)));
             AuthenticationHeaderValue retVal = new AuthenticationHeaderValue("Basic", base64encodedUserAndPass);
             return retVal;
+        }
+
+        private string getUsername() {
+
+            return apiKey + "." + getNonce() + "." + getEpochCurrentTimestamp();
         }
 
         private string getPassword(string requestUrl) {
@@ -48,11 +55,6 @@ namespace mBillsTest
             return hexHashString;
         }
 
-        private string getUsername() {
-
-            return apiKey + "." + getNonce() + "." + getEpochCurrentTimestamp();
-        }
-
         public string getNonce() {
             // returns a random 8-15 digit number. Is nonce really just a random 8-15 digit number? 
             // Should it be unique? As it is now, it's just a random number
@@ -66,8 +68,7 @@ namespace mBillsTest
         }
 
         public string getEpochCurrentTimestamp() {
-            // needs to be epoch (unix) GMT time. Needs to be consistent with their servers, therefore use a global service to get time.
-            DateTime now = DateTime.Now.ToUniversalTime(); // for now, change to calling global service if it won't work. NOTE ALSO UTC = GMT.
+            DateTime now = TimeUtils.GetNetworkTime();
             var epoch = new DateTime(1970, 1, 1, 0, 0, 0, DateTimeKind.Utc);
             return Convert.ToInt64((now - epoch).TotalSeconds).ToString();
         }

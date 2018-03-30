@@ -1,20 +1,32 @@
 # MBills
 
-## Todos:
+### The loop
+
+- I call a method by their API
+- They call a webhook that I have set up (reverse-api).
+
+This is why I need to verify that it is really them when they are sending the response to the webhook. The provider signs each request and then I have to verify the signature.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+## Old information (might still be useful)
+
+### Todos:
 
 - Finish the HTTP client to actually be able to create requests to the server.
 
-## Open questions
-
-- Can I recieve test apiKey, secretKey to have my way around the application?
-
-- Most of the payment status updates are sent via webhooks which is a single URL configured for your API key. Where can I get this URL? Are there standard libraries for languages that can be used to connect to the webhook?
-
-- I don't understand how to correctly verify the response.
-
-- Decorator pattern comes in handy every once in a while - check it out in free time.
-
-## How to implement
+### How to implement
 
 #### How to authenticate to mBills server.
 
@@ -99,8 +111,6 @@ You need to receive ```apikey``` and ```secretkey```. ```secretkey``` is very va
 There is a diagram on how to do this in the documentation!
 
 ### Open questions
-
-
 
 - How long should we wait for the user to confirm the transaction after timing out?
 

@@ -4,10 +4,10 @@
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProjectGuid>{EFC1F16C-567B-405E-B92E-2D937A950394}</ProjectGuid>
+    <ProjectGuid>{58B53E0E-66CF-498A-B66C-595F8F9BCD17}</ProjectGuid>
     <OutputType>Exe</OutputType>
-    <RootNamespace>mBillsTest</RootNamespace>
-    <AssemblyName>mBillsTest</AssemblyName>
+    <RootNamespace>mBillsTestEnv</RootNamespace>
+    <AssemblyName>mBillsTestEnv</AssemblyName>
     <TargetFrameworkVersion>v4.6.1</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <AutoGenerateBindingRedirects>true</AutoGenerateBindingRedirects>
@@ -42,17 +42,11 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="APICalls.cs" />
-    <Compile Include="AuthHeaderGenerator.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="TransactionStatus.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />
-  </ItemGroup>
-  <ItemGroup>
-    <WCFMetadata Include="Connected Services\" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

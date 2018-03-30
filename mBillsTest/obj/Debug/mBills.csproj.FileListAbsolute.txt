@@ -1,0 +1,10 @@
+C:\Users\Kristijan\Desktop\playground\mBillsTest\mBillsTest\obj\Debug\mBills.csprojResolveAssemblyReference.cache
+C:\Users\Kristijan\Desktop\playground\mBillsTest\mBillsTest\obj\Debug\mBills.csproj.CoreCompileInputs.cache
+C:\Users\Kristijan\Desktop\playground\mBillsTest\mBillsTest\obj\Debug\mBillsTest.exe
+C:\Users\Kristijan\Desktop\playground\mBillsTest\mBillsTest\obj\Debug\mBillsTest.pdb
+C:\Users\Kristijan\Desktop\playground\mBillsTest\mBillsTest\bin\Debug\mBillsTest.exe.config
+C:\Users\Kristijan\Desktop\playground\mBillsTest\mBillsTest\bin\Debug\mBillsTest.exe
+C:\Users\Kristijan\Desktop\playground\mBillsTest\mBillsTest\bin\Debug\mBillsTest.pdb
+C:\Users\Kristijan\Desktop\playground\mBillsTest\mBillsTest\bin\Debug\BouncyCastle.Crypto.dll
+C:\Users\Kristijan\Desktop\playground\mBillsTest\mBillsTest\bin\Debug\System.Threading.Tasks.Dataflow.dll
+C:\Users\Kristijan\Desktop\playground\mBillsTest\mBillsTest\obj\Debug\mBills.csproj.CopyComplete
