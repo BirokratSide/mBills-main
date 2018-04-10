@@ -17,14 +17,14 @@ namespace mBillsTest
         static string secretKey = "example-secretkey";
         static string publicKeyFile = "mbills-server-public-key.txt";
         static string workingDirectory = @"C:\Users\Kristijan\Desktop\playground\mBillsTest";
-        static APICalls api;
+        static MBillsAPICaller api;
 
         // logic
         static void Main(string[] args)
         {
             setDirectoryToRootFolder();
 
-            api = new APICalls(apiRootPath, apiKey, secretKey);
+            api = new MBillsAPICaller(apiRootPath, apiKey, secretKey);
             api.testWebHookConnection();
 
             Console.ReadLine();

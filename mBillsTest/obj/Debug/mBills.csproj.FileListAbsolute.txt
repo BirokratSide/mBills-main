@@ -8,3 +8,5 @@ C:\Users\Kristijan\Desktop\playground\mBillsTest\mBillsTest\bin\Debug\mBillsTest
 C:\Users\Kristijan\Desktop\playground\mBillsTest\mBillsTest\bin\Debug\BouncyCastle.Crypto.dll
 C:\Users\Kristijan\Desktop\playground\mBillsTest\mBillsTest\bin\Debug\System.Threading.Tasks.Dataflow.dll
 C:\Users\Kristijan\Desktop\playground\mBillsTest\mBillsTest\obj\Debug\mBills.csproj.CopyComplete
+C:\Users\Kristijan\Desktop\playground\mBillsTest\mBillsTest\bin\Debug\Newtonsoft.Json.dll
+C:\Users\Kristijan\Desktop\playground\mBillsTest\mBillsTest\bin\Debug\Newtonsoft.Json.xml

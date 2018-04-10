@@ -8,14 +8,14 @@ using System.Net.Http.Headers;
 
 namespace mBillsTest
 {
-    class AuthHeaderGenerator
+    class MBillsAuthHeaderGenerator
     {
 
         // user variables
         string apiKey;
         string secretKey;
 
-        public AuthHeaderGenerator(string apiKey, string secretKey) {
+        public MBillsAuthHeaderGenerator(string apiKey, string secretKey) {
             this.apiKey = apiKey;
             this.secretKey = secretKey;
         }
@@ -24,7 +24,7 @@ namespace mBillsTest
             // mBills' method of authorization is done by the Basic access authentication http standard - you
             // need to encode the username and password by base64 and then send it. It's the simplest method.
             string username = getUsername();
-            string password = getPassword(requestUrl);
+            string password = getPassword(username, requestUrl);
             string base64encodedUserAndPass = Convert.ToBase64String(
                                                     System.Text.ASCIIEncoding.ASCII.GetBytes(
                                                     string.Format("{0}:{1}", username, password)));
@@ -37,8 +37,8 @@ namespace mBillsTest
             return apiKey + "." + getNonce() + "." + getEpochCurrentTimestamp();
         }
 
-        private string getPassword(string requestUrl) {
-            string rawPassword = getUsername() + secretKey + requestUrl;
+        private string getPassword(string username, string requestUrl) {
+            string rawPassword = username + secretKey + requestUrl;
             return encodePassword(rawPassword);
         }
 
@@ -46,8 +46,8 @@ namespace mBillsTest
             // SHA256 encoded HEX string, presuming that the password string was ASCII encoded
             SHA256 encrypter = SHA256Managed.Create();
             byte[] hashValue;
-            byte[] passwordByes = Encoding.ASCII.GetBytes(password); // not sure if ASCII encoding??
-            hashValue = encrypter.ComputeHash(passwordByes);
+            byte[] passwordBytes = Encoding.ASCII.GetBytes(password); // not sure if ASCII encoding??
+            hashValue = encrypter.ComputeHash(passwordBytes);
 
             // hash needs to be HEX encoded
             string hexHashString = BitConverter.ToString(hashValue).Replace("-", "");
@@ -68,9 +68,9 @@ namespace mBillsTest
         }
 
         public string getEpochCurrentTimestamp() {
-            DateTime now = TimeUtils.GetNetworkTime();
-            var epoch = new DateTime(1970, 1, 1, 0, 0, 0, DateTimeKind.Utc);
-            return Convert.ToInt64((now - epoch).TotalSeconds).ToString();
+            DateTime now = TimeUtils.GetNetworkTime() - new TimeSpan(2, 0, 0);
+            var epoch = new DateTime(1970, 1, 1);
+            return ((int)(now - epoch).TotalSeconds).ToString();
         }
     }
 }

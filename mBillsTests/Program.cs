@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 using mBillsTest;
 using System.IO;
 using mBillsTest;
+using mBillsTest.structs;
 
 namespace mBillsTests
 {
@@ -20,8 +21,14 @@ namespace mBillsTests
             string endpoint = GAppSettings.Get("TEST_ENDPOINT");
             string publicKeyPath = GAppSettings.Get("TEST_PUBLICKEYFILEPATH");
 
-            APICalls api = new APICalls(endpoint, apiKey, secretKey);
-            Console.WriteLine(api.testConnection());
+            // authenticate to the API
+            MBillsAPICaller api = new MBillsAPICaller(endpoint, apiKey, secretKey);
+            SMBillsAuthResponse response = api.testConnection();
+            Console.WriteLine("Response transaction ID: {0}", response.transactionId);
+
+            // verify the signature
+            MBillsSignatureValidator validator = new MBillsSignatureValidator(publicKeyPath, apiKey);
+            Console.WriteLine("Validation result: {0}", validator.Verify(response));
 
 
             Console.ReadLine();
