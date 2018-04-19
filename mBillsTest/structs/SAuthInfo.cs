@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace mBillsTest.structs
 {
-    public class SMBillsAuthInfo
+    public class SAuthInfo
     {
         public int nonce;
         public string timestamp;

@@ -30,15 +30,31 @@ namespace mBillsTest
             this.apiRootPath = apiRootPath;
         }
 
-        public SMBillsAuthResponse testConnection() {
+        public SAuthResponse testConnection() {
             string response = simpleGet(this.apiRootPath + "/API/v1/system/test").GetAwaiter().GetResult();
-            SMBillsAuthResponse res = JsonConvert.DeserializeObject<SMBillsAuthResponse>(response);
+            SAuthResponse res = JsonConvert.DeserializeObject<SAuthResponse>(response);
             Console.WriteLine("");
             return res;
         }
 
         public string testWebHookConnection() {
             return simpleGet(this.apiRootPath + "/API/v1/system/testwebhook").GetAwaiter().GetResult();
+        }
+
+        public SSaleResponse testSale() {
+            string requestUri = this.apiRootPath + "/API/v1/transaction/sale";
+            setAuthenticationHeader(requestUri);
+
+            SSaleRequest req = new SSaleRequest(2.0f);
+            string json = JsonConvert.SerializeObject(req);
+
+            StringContent content = new StringContent(json, Encoding.UTF8, "application/json");
+            var response = httpClient.PostAsync(requestUri, content).GetAwaiter().GetResult();
+
+            string jsonResponse = response.Content.ReadAsStringAsync().GetAwaiter().GetResult();
+            SSaleResponse SaleResponse = JsonConvert.DeserializeObject<SSaleResponse>(jsonResponse);
+
+            return SaleResponse;
         }
 
         #region [auxiliary]

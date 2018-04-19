@@ -6,13 +6,13 @@ using System.Threading.Tasks;
 
 namespace mBillsTest.structs
 {
-    public class SMBillsAuthResponse
+    public class SAuthResponse
     {
         public string transactionId;
         public string orderid;
         public string channelid;
         public int paymenttokennumber;
         public int status;
-        public SMBillsAuthInfo auth;
+        public SAuthInfo auth;
     }
 }

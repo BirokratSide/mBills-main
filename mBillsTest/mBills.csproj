@@ -55,8 +55,10 @@
     <Compile Include="MBillsSignatureValidator.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="structs\SMBillsAuthInfo.cs" />
-    <Compile Include="structs\SMBillsAuthResponse.cs" />
+    <Compile Include="structs\SSaleResponse.cs" />
+    <Compile Include="structs\SAuthInfo.cs" />
+    <Compile Include="structs\SAuthResponse.cs" />
+    <Compile Include="structs\SSaleRequest.cs" />
     <Compile Include="TimeUtils.cs" />
     <Compile Include="TransactionStatus.cs" />
   </ItemGroup>

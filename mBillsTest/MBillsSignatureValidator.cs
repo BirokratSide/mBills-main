@@ -45,7 +45,7 @@ namespace mBillsTest
         #endregion
 
         #region // public //
-        public bool Verify(SMBillsAuthResponse response) {
+        public bool Verify(SAuthResponse response) {
             RSACryptoServiceProvider csp = retrieveCryptoServiceProvider();
             string verificationMessage = getVerificationMessage(response);
             byte[] hash = getSha256Hash(verificationMessage);
@@ -62,7 +62,7 @@ namespace mBillsTest
         }
 
         // @MBills documentation
-        private string getVerificationMessage(SMBillsAuthResponse response) {
+        private string getVerificationMessage(SAuthResponse response) {
             return this.apiKey + response.auth.nonce + response.auth.timestamp + response.transactionId;
         }
 
