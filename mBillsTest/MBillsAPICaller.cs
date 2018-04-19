@@ -66,6 +66,23 @@ namespace mBillsTest
             return SaleResponse;
         }
 
+        public void uploadDocument(string xmlbill)
+        {
+            string requestUri = this.apiRootPath + "/API/v1/document/upload";
+            setAuthenticationHeader(requestUri);
+
+            string base64bill = Convert.ToBase64String(Encoding.UTF8.GetBytes(xmlbill));
+            // required before calling POS quick payment
+            MultipartFormDataContent cnt = new MultipartFormDataContent();
+            cnt.Add(new StringContent(base64bill, Encoding.UTF8, "application/xml"));
+            var response = httpClient.PostAsync(requestUri, cnt).GetAwaiter().GetResult();
+            Console.WriteLine("neki");
+        }
+
+        public SSaleResponse saleQuickPos(float price, string usertokenid, string documentid) {
+            return null;
+        }
+
         #region [auxiliary]
         private void setAuthenticationHeader(string url)
         {

@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="utf-8"?>
+<bill>
+    <header>
+        <bill_number>E3-033-1770</bill_number>
+        <time>2016-09-19T12:29:08</time>
+        <header_text>Podjetje d.o.o.
+    PE Ljubljana
+    Slovenska 1, 1000 Ljubljana 
+    ID za DDV: 10015100</header_text>
+        <zoi>8fcd50d003549a258261a40b3ff2a1f1</zoi>
+        <tax_number>10015100</tax_number>
+        <total_amount>4.40</total_amount>
+    </header>
+    <items>
+        <item>
+            <title>LAŠKO 0,50 STEK.</title>
+            <price>2.10</price>
+            <quantity>1.00</quantity>
+            <discount>0.00</discount>
+            <amount>2.10</amount>
+        </item>
+        <item>
+            <title>UNION 0,50 STEK.</title>
+            <price>2.30</price>
+            <quantity>1.00</quantity>
+            <discount>0.00</discount>
+            <amount>2.30</amount>
+        </item>
+    </items>
+    <taxes>
+        <tax>
+            <percent>22.00</percent>
+            <base>3.61</base>
+            <tax>0.79</tax>
+        </tax>
+    </taxes>
+</bill>

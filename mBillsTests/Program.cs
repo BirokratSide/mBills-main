@@ -8,6 +8,8 @@ using System.IO;
 using mBillsTest;
 using mBillsTest.structs;
 
+using Newtonsoft.Json;
+
 namespace mBillsTests
 {
     class Program
@@ -31,7 +33,11 @@ namespace mBillsTests
             Console.WriteLine("Validation result: {0}", validator.Verify(response.auth, response.transactionId));
 
             // start a sale
-            api.testSale();
+            SSaleResponse resp = api.testSale();
+            Console.WriteLine(JsonConvert.SerializeObject(resp));
+
+            // upload bill and POS sale
+            api.uploadDocument(File.ReadAllText(GAppSettings.Get("RESOURCES_DIRECTORY") + @"\bill.xml"));
 
             Console.ReadLine();
         }
