@@ -22,17 +22,16 @@ namespace mBillsTests
             string publicKeyPath = GAppSettings.Get("TEST_PUBLICKEYFILEPATH");
 
             // authenticate to the API
-            MBillsAPICaller api = new MBillsAPICaller(endpoint, apiKey, secretKey);
+            MBillsAPICaller api = new MBillsAPICaller(endpoint, apiKey, secretKey, publicKeyPath);
             SAuthResponse response = api.testConnection();
             Console.WriteLine("Response transaction ID: {0}", response.transactionId);
 
             // verify the signature
             MBillsSignatureValidator validator = new MBillsSignatureValidator(publicKeyPath, apiKey);
-            Console.WriteLine("Validation result: {0}", validator.Verify(response));
+            Console.WriteLine("Validation result: {0}", validator.Verify(response.auth, response.transactionId));
 
             // start a sale
             api.testSale();
-
 
             Console.ReadLine();
         }

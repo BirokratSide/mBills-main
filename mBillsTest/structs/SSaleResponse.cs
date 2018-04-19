@@ -15,6 +15,6 @@ namespace mBillsTest.structs
         public string channelid;
         public int status;
         public string statusdescription;
-        public SAuthResponse auth;
+        public SAuthInfo auth;
     }
 }

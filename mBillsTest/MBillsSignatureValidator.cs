@@ -45,11 +45,11 @@ namespace mBillsTest
         #endregion
 
         #region // public //
-        public bool Verify(SAuthResponse response) {
+        public bool Verify(SAuthInfo response, string itemId) {
             RSACryptoServiceProvider csp = retrieveCryptoServiceProvider();
-            string verificationMessage = getVerificationMessage(response);
+            string verificationMessage = getVerificationMessage(response, itemId);
             byte[] hash = getSha256Hash(verificationMessage);
-            byte[] signature = HexStringToByteArray(response.auth.signature);
+            byte[] signature = HexStringToByteArray(response.signature);
             return csp.VerifyHash(hash, CryptoConfig.MapNameToOID("SHA256"), signature);
         }
         #endregion
@@ -62,8 +62,8 @@ namespace mBillsTest
         }
 
         // @MBills documentation
-        private string getVerificationMessage(SAuthResponse response) {
-            return this.apiKey + response.auth.nonce + response.auth.timestamp + response.transactionId;
+        private string getVerificationMessage(SAuthInfo response, string itemId) {
+            return this.apiKey + response.nonce + response.timestamp + itemId; // itemId is e.g. transactionId
         }
 
         private byte[] getSha256Hash(string message) {

@@ -21,19 +21,24 @@ namespace mBillsTest
     {
         string apiRootPath = "";
         MBillsAuthHeaderGenerator authGen;
+        MBillsSignatureValidator validator;
         HttpClient httpClient;
 
 
-        public MBillsAPICaller(string apiRootPath, string apiKey, string secretKey) {
+        public MBillsAPICaller(string apiRootPath, string apiKey, string secretKey, string publicKeyPath) {
             authGen = new MBillsAuthHeaderGenerator(apiKey, secretKey);
             httpClient = new HttpClient();
+            validator = new MBillsSignatureValidator(publicKeyPath, apiKey);
             this.apiRootPath = apiRootPath;
         }
 
         public SAuthResponse testConnection() {
             string response = simpleGet(this.apiRootPath + "/API/v1/system/test").GetAwaiter().GetResult();
             SAuthResponse res = JsonConvert.DeserializeObject<SAuthResponse>(response);
-            Console.WriteLine("");
+            if (!validator.Verify(res.auth, res.transactionId))
+            {
+                throw new Exception("Failed to verify MBills response.");
+            }
             return res;
         }
 
@@ -53,6 +58,10 @@ namespace mBillsTest
 
             string jsonResponse = response.Content.ReadAsStringAsync().GetAwaiter().GetResult();
             SSaleResponse SaleResponse = JsonConvert.DeserializeObject<SSaleResponse>(jsonResponse);
+
+            if (!validator.Verify(SaleResponse.auth, SaleResponse.transactionid)) {
+                throw new Exception("Failed to verify MBills response.");
+            }
 
             return SaleResponse;
         }

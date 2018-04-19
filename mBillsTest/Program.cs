@@ -23,10 +23,6 @@ namespace mBillsTest
         static void Main(string[] args)
         {
             setDirectoryToRootFolder();
-
-            api = new MBillsAPICaller(apiRootPath, apiKey, secretKey);
-            api.testWebHookConnection();
-
             Console.ReadLine();
         }
 
