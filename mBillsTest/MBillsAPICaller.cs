@@ -74,7 +74,7 @@ namespace mBillsTest
             string base64bill = Convert.ToBase64String(Encoding.UTF8.GetBytes(xmlbill));
             // required before calling POS quick payment
             MultipartFormDataContent cnt = new MultipartFormDataContent();
-            cnt.Add(new StringContent(base64bill, Encoding.UTF8, "application/xml"));
+            cnt.Add(new StringContent(base64bill, Encoding.Unicode, "application/xml"));
             var response = httpClient.PostAsync(requestUri, cnt).GetAwaiter().GetResult();
             Console.WriteLine("neki");
         }
