@@ -10,3 +10,15 @@ C:\Users\Kristijan\Desktop\playground\mBillsTest\mBillsTest\bin\Debug\System.Thr
 C:\Users\Kristijan\Desktop\playground\mBillsTest\mBillsTest\obj\Debug\mBills.csproj.CopyComplete
 C:\Users\Kristijan\Desktop\playground\mBillsTest\mBillsTest\bin\Debug\Newtonsoft.Json.dll
 C:\Users\Kristijan\Desktop\playground\mBillsTest\mBillsTest\bin\Debug\Newtonsoft.Json.xml
+C:\Users\km\Desktop\playground\birokrat\mBills-main\mBillsTest\bin\Debug\mBillsTest.exe.config
+C:\Users\km\Desktop\playground\birokrat\mBills-main\mBillsTest\bin\Debug\mBillsTest.exe
+C:\Users\km\Desktop\playground\birokrat\mBills-main\mBillsTest\bin\Debug\mBillsTest.pdb
+C:\Users\km\Desktop\playground\birokrat\mBills-main\mBillsTest\bin\Debug\BouncyCastle.Crypto.dll
+C:\Users\km\Desktop\playground\birokrat\mBills-main\mBillsTest\bin\Debug\Newtonsoft.Json.dll
+C:\Users\km\Desktop\playground\birokrat\mBills-main\mBillsTest\bin\Debug\System.Threading.Tasks.Dataflow.dll
+C:\Users\km\Desktop\playground\birokrat\mBills-main\mBillsTest\bin\Debug\Newtonsoft.Json.xml
+C:\Users\km\Desktop\playground\birokrat\mBills-main\mBillsTest\obj\Debug\mBills.csprojAssemblyReference.cache
+C:\Users\km\Desktop\playground\birokrat\mBills-main\mBillsTest\obj\Debug\mBills.csproj.CoreCompileInputs.cache
+C:\Users\km\Desktop\playground\birokrat\mBills-main\mBillsTest\obj\Debug\mBills.csproj.CopyComplete
+C:\Users\km\Desktop\playground\birokrat\mBills-main\mBillsTest\obj\Debug\mBillsTest.exe
+C:\Users\km\Desktop\playground\birokrat\mBills-main\mBillsTest\obj\Debug\mBillsTest.pdb

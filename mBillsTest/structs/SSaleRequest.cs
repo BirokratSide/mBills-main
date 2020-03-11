@@ -8,7 +8,7 @@ namespace mBillsTest.structs
 {
     public class SSaleRequest
     {
-        public float amount;
+        public int amount; // WARNING!!! THIS IS EXPRESSED IN CENTS AND NOT EUROS!!!
         public string currency;
         public string purpose;
         public string paymentreference; // optional
@@ -16,11 +16,11 @@ namespace mBillsTest.structs
         public string channelid; //optional
         public bool capture; // optional
 
-        public SSaleRequest(float amount, string paymentreference = "", string orderid = "", string channelid = "", bool capture = false)
+        public SSaleRequest(int amount_in_cents, string paymentreference = "", string orderid = "", string channelid = "", bool capture = false)
         {
-            this.amount = amount;
+            this.amount = (int)amount_in_cents; 
             this.currency = "EUR";
-            this.purpose = "Online Payment";
+            this.purpose = "Online payment";
             this.paymentreference = paymentreference;
             this.orderid = orderid;
             this.channelid = channelid;

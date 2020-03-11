@@ -49,12 +49,15 @@ namespace mBillsTest
         public SSaleResponse testSale() {
             string requestUri = this.apiRootPath + "/API/v1/transaction/sale";
             setAuthenticationHeader(requestUri);
+            
 
-            SSaleRequest req = new SSaleRequest(2.0f);
+            SSaleRequest req = new SSaleRequest(100, orderid: "124134986h", channelid: "eshop1", paymentreference: "SI0015092015");
             string json = JsonConvert.SerializeObject(req);
 
-            StringContent content = new StringContent(json, Encoding.UTF8, "application/json");
+            StringContent content = new StringContent(json, System.Text.Encoding.Default, "application/json");
             var response = httpClient.PostAsync(requestUri, content).GetAwaiter().GetResult();
+            if (!response.IsSuccessStatusCode)
+                throw new Exception($"Status code was bad {response.StatusCode}");
 
             string jsonResponse = response.Content.ReadAsStringAsync().GetAwaiter().GetResult();
             SSaleResponse SaleResponse = JsonConvert.DeserializeObject<SSaleResponse>(jsonResponse);
