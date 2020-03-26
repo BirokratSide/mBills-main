@@ -31,10 +31,17 @@ namespace mBillsTest.api_facade.security
         {
             setAuthenticationHeader(requestUri);
             string returnVal = requestLogic();
-            var anon = new { auth = new SAuthInfo(), transactionid = "" };
+            var anon = new { auth = new SAuthInfo(), transactionid = "", documentid = "", marketplacemerchantid = "" };
             var json = JsonConvert.DeserializeAnonymousType(returnVal, anon);
 
-            if (!validator.Verify(json.auth, json.transactionid))
+            string val = json.transactionid;
+            if (json.transactionid == null)
+                val = json.documentid;
+            if (val == null)
+                val = json.marketplacemerchantid;
+
+
+            if (!validator.Verify(json.auth, val))
             {
                 throw new Exception("Failed to verify MBills response.");
             }

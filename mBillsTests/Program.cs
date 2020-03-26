@@ -10,6 +10,7 @@ using mBillsTest.structs;
 
 using Newtonsoft.Json;
 using System.Threading;
+using mBillsTest.api_facade.persistent;
 
 namespace mBillsTests
 {
@@ -19,20 +20,17 @@ namespace mBillsTests
         static void Main(string[] args)
         {
             Directory.SetCurrentDirectory(GAppSettings.Get("WORKING_DIRECTORY", ""));
-            string apiKey = GAppSettings.Get("TEST_APIKEY");
-            string secretKey = GAppSettings.Get("TEST_SECRETKEY");
             string endpoint = GAppSettings.Get("TEST_ENDPOINT");
-            string publicKeyPath = GAppSettings.Get("TEST_PUBLICKEYFILEPATH");
+
+            mBillsDatabase db = new mBillsDatabase();
+            Environment.Exit(1);
+
 
             // authenticate to the API
-            MBillsAPIFacade api = new MBillsAPIFacade(endpoint, apiKey, secretKey, publicKeyPath);
+            MBillsAPIFacade api = new MBillsAPIFacade(endpoint);
             SAuthResponse response = api.testConnection();
             Console.WriteLine("Response transaction ID: {0}", response.transactionId);
-
-            // verify the signature
-            MBillsSignatureValidator validator = new MBillsSignatureValidator(publicKeyPath, apiKey);
-            Console.WriteLine("Validation result: {0}", validator.Verify(response.auth, response.transactionId));
-
+            
             // upload bill and POS sale
             string docid = api.UploadDocument(File.ReadAllText(GAppSettings.Get("RESOURCES_DIRECTORY") + @"\bill.xml"));
 

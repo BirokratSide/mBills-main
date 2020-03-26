@@ -17,8 +17,7 @@ using mBillsTest.api_facade.security;
 namespace mBillsTest
 {
     /*
-    APICalls's public methods will call the mBills API. At instantiation, it also knows by itself how to set the authorization
-    headers for the calls.
+    APICalls's public methods will call the mBills API.
     */
     public class MBillsAPIFacade
     {
