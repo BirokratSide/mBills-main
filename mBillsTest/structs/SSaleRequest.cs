@@ -15,8 +15,9 @@ namespace mBillsTest.structs
         public string orderid; // optional
         public string channelid; //optional
         public bool capture; // optional
+        public string documentid; // optional
 
-        public SSaleRequest(int amount_in_cents, string paymentreference = "", string orderid = "", string channelid = "", bool capture = false)
+        public SSaleRequest(int amount_in_cents, string paymentreference = "", string orderid = "", string channelid = "", bool capture = false, string documentid = "")
         {
             this.amount = (int)amount_in_cents; 
             this.currency = "EUR";
@@ -25,6 +26,7 @@ namespace mBillsTest.structs
             this.orderid = orderid;
             this.channelid = channelid;
             this.capture = capture;
+            this.documentid = documentid;
         }
     }
 }

@@ -10,6 +10,7 @@ using System.Net.Http.Headers;
 using Newtonsoft.Json;
 
 using mBillsTest.structs;
+using System.Drawing;
 
 namespace mBillsTest
 {
@@ -23,6 +24,8 @@ namespace mBillsTest
         MBillsAuthHeaderGenerator authGen;
         MBillsSignatureValidator validator;
         HttpClient httpClient;
+
+        string qrGenPath = "https://qr.mbills.si/qrPng/{0}";
 
 
         public MBillsAPICaller(string apiRootPath, string apiKey, string secretKey, string publicKeyPath) {
@@ -46,12 +49,14 @@ namespace mBillsTest
             return simpleGet(this.apiRootPath + "/API/v1/system/testwebhook").GetAwaiter().GetResult();
         }
 
-        public SSaleResponse testSale() {
+        public SSaleResponse testSale(string documentId = "") {
             string requestUri = this.apiRootPath + "/API/v1/transaction/sale";
             setAuthenticationHeader(requestUri);
             
 
             SSaleRequest req = new SSaleRequest(100, orderid: "124134986h", channelid: "eshop1", paymentreference: "SI0015092015");
+            if (documentId != "")
+                req.documentid = documentId;
             string json = JsonConvert.SerializeObject(req);
 
             StringContent content = new StringContent(json, System.Text.Encoding.Default, "application/json");
@@ -69,17 +74,40 @@ namespace mBillsTest
             return SaleResponse;
         }
 
-        public void uploadDocument(string xmlbill)
+        public void getQRCode(string tokennumber) {
+            
+            string addr = string.Format(qrGenPath, tokennumber);
+            HttpClient clnt = new HttpClient();
+            HttpResponseMessage msg = clnt.GetAsync(addr).GetAwaiter().GetResult();
+            Stream srm = msg.Content.ReadAsStreamAsync().GetAwaiter().GetResult();
+            Image.FromStream(srm).Save(@"C:\Users\km\Desktop\playground\birokrat\mBills-main\some.jpg");
+        }
+
+        public string uploadDocument(string xmlbill)
         {
+            // returns documentId
             string requestUri = this.apiRootPath + "/API/v1/document/upload";
             setAuthenticationHeader(requestUri);
 
             string base64bill = Convert.ToBase64String(Encoding.UTF8.GetBytes(xmlbill));
-            // required before calling POS quick payment
-            MultipartFormDataContent cnt = new MultipartFormDataContent();
-            cnt.Add(new StringContent(base64bill, Encoding.Unicode, "application/xml"));
-            var response = httpClient.PostAsync(requestUri, cnt).GetAwaiter().GetResult();
-            Console.WriteLine("neki");
+
+            string stringContent = $@"
+-----BOUNDARY
+Content-Disposition: form-data; name=""document[file]""; filename=""racun1.xml""
+Content-Type: application/xml
+Content-Transfer-Encoding: base64
+
+{base64bill}
+-----BOUNDARY--
+            ".Trim();
+            StringContent content = new StringContent(stringContent, System.Text.Encoding.Default);
+            content.Headers.Remove("Content-Type");
+            content.Headers.TryAddWithoutValidation("Content-Type", "multipart/form-data; boundary=" + "---BOUNDARY");
+
+            var response = httpClient.PostAsync(requestUri, content).GetAwaiter().GetResult();
+            var definition = new { documentId = "" };
+            var anon = JsonConvert.DeserializeAnonymousType(response.Content.ReadAsStringAsync().GetAwaiter().GetResult(), definition);
+            return anon.documentId;
         }
 
         public SSaleResponse saleQuickPos(float price, string usertokenid, string documentid) {

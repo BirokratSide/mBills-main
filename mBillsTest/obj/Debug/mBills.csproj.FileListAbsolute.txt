@@ -22,3 +22,4 @@ C:\Users\km\Desktop\playground\birokrat\mBills-main\mBillsTest\obj\Debug\mBills.
 C:\Users\km\Desktop\playground\birokrat\mBills-main\mBillsTest\obj\Debug\mBills.csproj.CopyComplete
 C:\Users\km\Desktop\playground\birokrat\mBills-main\mBillsTest\obj\Debug\mBillsTest.exe
 C:\Users\km\Desktop\playground\birokrat\mBills-main\mBillsTest\obj\Debug\mBillsTest.pdb
+C:\Users\km\Desktop\playground\birokrat\mBills-main\mBillsTest\bin\Debug\System.Drawing.Primitives.dll

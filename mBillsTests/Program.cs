@@ -32,12 +32,17 @@ namespace mBillsTests
             MBillsSignatureValidator validator = new MBillsSignatureValidator(publicKeyPath, apiKey);
             Console.WriteLine("Validation result: {0}", validator.Verify(response.auth, response.transactionId));
 
+            // upload bill and POS sale
+            string docid = api.uploadDocument(File.ReadAllText(GAppSettings.Get("RESOURCES_DIRECTORY") + @"\bill.xml"));
+
             // start a sale
-            SSaleResponse resp = api.testSale();
+            SSaleResponse resp = api.testSale(docid);
             Console.WriteLine(JsonConvert.SerializeObject(resp));
 
+            // qr code
+            api.getQRCode(resp.paymenttokennumber.ToString());
+
             // upload bill and POS sale
-            api.uploadDocument(File.ReadAllText(GAppSettings.Get("RESOURCES_DIRECTORY") + @"\bill.xml"));
 
             Console.ReadLine();
         }
