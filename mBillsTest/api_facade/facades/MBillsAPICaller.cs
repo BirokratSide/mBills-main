@@ -12,6 +12,7 @@ using Newtonsoft.Json;
 using mBillsTest.structs;
 using System.Drawing;
 using mBillsTest.api_facade.structs;
+using mBillsTest.api_facade.security;
 
 namespace mBillsTest
 {
@@ -22,40 +23,21 @@ namespace mBillsTest
     public class MBillsAPIFacade
     {
         string apiRootPath = "";
-        MBillsAuthHeaderGenerator authGen;
-        MBillsSignatureValidator validator;
         HttpClient httpClient;
-
+        MBillsAuthenticator authenticator; 
         string qrGenPath = "https://qr.mbills.si/qrPng/{0}";
 
 
-        public MBillsAPIFacade(string apiRootPath, string apiKey, string secretKey, string publicKeyPath) {
-            authGen = new MBillsAuthHeaderGenerator(apiKey, secretKey);
+        public MBillsAPIFacade(string apiRootPath) {
             httpClient = new HttpClient();
-            validator = new MBillsSignatureValidator(publicKeyPath, apiKey);
+            authenticator = new MBillsAuthenticator(httpClient);
             this.apiRootPath = apiRootPath;
         }
-
-        #region [basic methods]
-        public SAuthResponse testConnection() {
-            string response = simpleGet(this.apiRootPath + "/API/v1/system/test").GetAwaiter().GetResult();
-            SAuthResponse res = JsonConvert.DeserializeObject<SAuthResponse>(response);
-            if (!validator.Verify(res.auth, res.transactionId))
-            {
-                throw new Exception("Failed to verify MBills response.");
-            }
-            return res;
-        }
-
-        public string testWebHookConnection() {
-            return simpleGet(this.apiRootPath + "/API/v1/system/testwebhook").GetAwaiter().GetResult();
-        }
-        #endregion
 
         #region [api methods]
         public SSaleResponse Sale(int amountInCents, string documentId = "") {
             string requestUri = this.apiRootPath + "/API/v1/transaction/sale";
-            string result = AuthenticateAndVerify(requestUri, () =>
+            string result = authenticator.AuthenticateAndVerify(requestUri, () =>
             {
                 SSaleRequest req = new SSaleRequest(amountInCents, orderid: "124134986h", channelid: "eshop1", paymentreference: "SI0015092015");
                 if (documentId != "")
@@ -77,7 +59,7 @@ namespace mBillsTest
         {
             // returns documentId
             string requestUri = this.apiRootPath + "/API/v1/document/upload";
-            string result = AuthenticateAndVerify(requestUri, () =>
+            string result = authenticator.AuthenticateAndVerify(requestUri, () =>
             {
                 string base64bill = Convert.ToBase64String(Encoding.UTF8.GetBytes(xmlbill));
                 StringContent content = XmlBillTemplate.BillToStringContent(base64bill);
@@ -91,7 +73,7 @@ namespace mBillsTest
 
         public ETransactionStatus GetTransactionStatus(string transactionId) {
             string requestUri = this.apiRootPath + $"/API/v1/transaction/{transactionId}/status";
-            string result = AuthenticateAndVerify(requestUri, () =>
+            string result = authenticator.AuthenticateAndVerify(requestUri, () =>
             {
                 var response = httpClient.GetAsync(requestUri).GetAwaiter().GetResult();
                 var cont = response.Content.ReadAsStringAsync().GetAwaiter().GetResult();
@@ -104,7 +86,7 @@ namespace mBillsTest
 
         public ETransactionStatus Capture(string transactionid, int amountInCents, string message = "") {
             string requestUri = this.apiRootPath + $"/API/v1/transaction/{transactionid}/capture";
-            string result = AuthenticateAndVerify(requestUri, () =>
+            string result = authenticator.AuthenticateAndVerify(requestUri, () =>
             {
                 var anon = new { amount = amountInCents, currency = "EUR", message = message };
                 string serialized = JsonConvert.SerializeObject(anon);
@@ -121,7 +103,7 @@ namespace mBillsTest
 
         public ETransactionStatus Void(string transactionid, string message = "") {
             string requestUri = this.apiRootPath + $"/API/v1/transaction/{transactionid}/void";
-            string result = AuthenticateAndVerify(requestUri, () =>
+            string result = authenticator.AuthenticateAndVerify(requestUri, () =>
             {
                 var anon = new { message = message };
                 string serialized = JsonConvert.SerializeObject(anon);
@@ -144,33 +126,26 @@ namespace mBillsTest
             Stream srm = msg.Content.ReadAsStreamAsync().GetAwaiter().GetResult();
             Image.FromStream(srm).Save(@"C:\Users\km\Desktop\playground\birokrat\mBills-main\some.jpg");
         }
-        #endregion
 
-        #region [auxiliary]
-        private string AuthenticateAndVerify(string requestUri, Func<string> requestLogic)
+        public SAuthResponse testConnection()
         {
-            setAuthenticationHeader(requestUri);
-            string returnVal = requestLogic();
-            var anon = new { auth = new SAuthInfo(), transactionid = "" };
-            var json = JsonConvert.DeserializeAnonymousType(returnVal, anon);
-
-            if (!validator.Verify(json.auth, json.transactionid))
+            string requestUrl = this.apiRootPath + "/API/v1/system/test";
+            string result = authenticator.AuthenticateAndVerify(requestUrl, () =>
             {
-                throw new Exception("Failed to verify MBills response.");
-            }
-            return returnVal;
+                return httpClient.GetStringAsync(requestUrl).GetAwaiter().GetResult();
+            });
+            return JsonConvert.DeserializeObject<SAuthResponse>(result);
+            
         }
 
-        private void setAuthenticationHeader(string url)
+        public string testWebHookConnection()
         {
-            httpClient.DefaultRequestHeaders.Authorization = authGen.getAuthenticationHeaderValue(url);
-        }
-
-        private async Task<string> simpleGet(string url) {
-            setAuthenticationHeader(url);
-
-            string response = await httpClient.GetStringAsync(url);
-            return response;
+            string requestUrl = this.apiRootPath + "/API/v1/system/test";
+            string result = authenticator.AuthenticateAndVerify(requestUrl, () =>
+            {
+                return httpClient.GetStringAsync(requestUrl).GetAwaiter().GetResult();
+            });
+            return result;
         }
         #endregion
     }
