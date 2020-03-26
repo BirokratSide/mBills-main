@@ -34,19 +34,19 @@ namespace mBillsTests
             Console.WriteLine("Validation result: {0}", validator.Verify(response.auth, response.transactionId));
 
             // upload bill and POS sale
-            string docid = api.uploadDocument(File.ReadAllText(GAppSettings.Get("RESOURCES_DIRECTORY") + @"\bill.xml"));
+            string docid = api.UploadDocument(File.ReadAllText(GAppSettings.Get("RESOURCES_DIRECTORY") + @"\bill.xml"));
 
             int amount = 100;
 
             // start a sale
-            SSaleResponse resp = api.testSale(100, docid);
+            SSaleResponse resp = api.Sale(100, docid);
             Console.WriteLine(JsonConvert.SerializeObject(resp));
 
             // qr code
             api.getQRCode(resp.paymenttokennumber.ToString());
 
             while (true) {
-                ETransactionStatus status = api.getTransactionStatus(resp.transactionid);
+                ETransactionStatus status = api.GetTransactionStatus(resp.transactionid);
 
                 if (status == ETransactionStatus.Authorized) {
                     Console.WriteLine("");

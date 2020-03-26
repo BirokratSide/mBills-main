@@ -1,0 +1,177 @@
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+using System.Net;
+using System.IO;
+using System.Net.Http;
+using System.Net.Http.Headers;
+using Newtonsoft.Json;
+
+using mBillsTest.structs;
+using System.Drawing;
+using mBillsTest.api_facade.structs;
+
+namespace mBillsTest
+{
+    /*
+    APICalls's public methods will call the mBills API. At instantiation, it also knows by itself how to set the authorization
+    headers for the calls.
+    */
+    public class MBillsAPIFacade
+    {
+        string apiRootPath = "";
+        MBillsAuthHeaderGenerator authGen;
+        MBillsSignatureValidator validator;
+        HttpClient httpClient;
+
+        string qrGenPath = "https://qr.mbills.si/qrPng/{0}";
+
+
+        public MBillsAPIFacade(string apiRootPath, string apiKey, string secretKey, string publicKeyPath) {
+            authGen = new MBillsAuthHeaderGenerator(apiKey, secretKey);
+            httpClient = new HttpClient();
+            validator = new MBillsSignatureValidator(publicKeyPath, apiKey);
+            this.apiRootPath = apiRootPath;
+        }
+
+        #region [basic methods]
+        public SAuthResponse testConnection() {
+            string response = simpleGet(this.apiRootPath + "/API/v1/system/test").GetAwaiter().GetResult();
+            SAuthResponse res = JsonConvert.DeserializeObject<SAuthResponse>(response);
+            if (!validator.Verify(res.auth, res.transactionId))
+            {
+                throw new Exception("Failed to verify MBills response.");
+            }
+            return res;
+        }
+
+        public string testWebHookConnection() {
+            return simpleGet(this.apiRootPath + "/API/v1/system/testwebhook").GetAwaiter().GetResult();
+        }
+        #endregion
+
+        #region [api methods]
+        public SSaleResponse Sale(int amountInCents, string documentId = "") {
+            string requestUri = this.apiRootPath + "/API/v1/transaction/sale";
+            string result = AuthenticateAndVerify(requestUri, () =>
+            {
+                SSaleRequest req = new SSaleRequest(amountInCents, orderid: "124134986h", channelid: "eshop1", paymentreference: "SI0015092015");
+                if (documentId != "")
+                    req.documentid = documentId;
+                string json = JsonConvert.SerializeObject(req);
+
+                StringContent content = new StringContent(json, System.Text.Encoding.Default, "application/json");
+                var response = httpClient.PostAsync(requestUri, content).GetAwaiter().GetResult();
+                if (!response.IsSuccessStatusCode)
+                    throw new Exception($"Status code was bad {response.StatusCode}");
+
+                return response.Content.ReadAsStringAsync().GetAwaiter().GetResult();
+            });
+            SSaleResponse SaleResponse = JsonConvert.DeserializeObject<SSaleResponse>(result);
+            return SaleResponse;
+        }
+
+        public string UploadDocument(string xmlbill)
+        {
+            // returns documentId
+            string requestUri = this.apiRootPath + "/API/v1/document/upload";
+            string result = AuthenticateAndVerify(requestUri, () =>
+            {
+                string base64bill = Convert.ToBase64String(Encoding.UTF8.GetBytes(xmlbill));
+                StringContent content = XmlBillTemplate.BillToStringContent(base64bill);
+                var response = httpClient.PostAsync(requestUri, content).GetAwaiter().GetResult();
+                return response.Content.ReadAsStringAsync().GetAwaiter().GetResult();
+            });
+            var definition = new { documentId = "" };
+            var anon = JsonConvert.DeserializeAnonymousType(result, definition);
+            return anon.documentId;
+        }
+
+        public ETransactionStatus GetTransactionStatus(string transactionId) {
+            string requestUri = this.apiRootPath + $"/API/v1/transaction/{transactionId}/status";
+            string result = AuthenticateAndVerify(requestUri, () =>
+            {
+                var response = httpClient.GetAsync(requestUri).GetAwaiter().GetResult();
+                var cont = response.Content.ReadAsStringAsync().GetAwaiter().GetResult();
+                return cont;
+            });
+            var anon = new { status = "" };
+            string status = JsonConvert.DeserializeAnonymousType(result, anon).status;
+            return TransactionStatus.FromString(status);
+        }
+
+        public ETransactionStatus Capture(string transactionid, int amountInCents, string message = "") {
+            string requestUri = this.apiRootPath + $"/API/v1/transaction/{transactionid}/capture";
+            string result = AuthenticateAndVerify(requestUri, () =>
+            {
+                var anon = new { amount = amountInCents, currency = "EUR", message = message };
+                string serialized = JsonConvert.SerializeObject(anon);
+                StringContent content = new StringContent(serialized, System.Text.Encoding.Default, "application/json");
+
+                var resp = httpClient.PutAsync(requestUri, content).GetAwaiter().GetResult();
+                string con = resp.Content.ReadAsStringAsync().GetAwaiter().GetResult();
+                return con;
+            });
+            var some = new { status = "" };
+            string val = JsonConvert.DeserializeAnonymousType(result, some).status;
+            return TransactionStatus.FromString(val);
+        }
+
+        public ETransactionStatus Void(string transactionid, string message = "") {
+            string requestUri = this.apiRootPath + $"/API/v1/transaction/{transactionid}/void";
+            string result = AuthenticateAndVerify(requestUri, () =>
+            {
+                var anon = new { message = message };
+                string serialized = JsonConvert.SerializeObject(anon);
+                StringContent content = new StringContent(serialized, System.Text.Encoding.Default, "application/json");
+
+                var resp = httpClient.PutAsync(requestUri, content).GetAwaiter().GetResult();
+                string con = resp.Content.ReadAsStringAsync().GetAwaiter().GetResult();
+                return con;
+            });
+            var some = new { status = "" };
+            string val = JsonConvert.DeserializeAnonymousType(result, some).status;
+            return TransactionStatus.FromString(val);
+        }
+
+        public void getQRCode(string tokennumber)
+        {
+            string addr = string.Format(qrGenPath, tokennumber);
+            HttpClient clnt = new HttpClient();
+            HttpResponseMessage msg = clnt.GetAsync(addr).GetAwaiter().GetResult();
+            Stream srm = msg.Content.ReadAsStreamAsync().GetAwaiter().GetResult();
+            Image.FromStream(srm).Save(@"C:\Users\km\Desktop\playground\birokrat\mBills-main\some.jpg");
+        }
+        #endregion
+
+        #region [auxiliary]
+        private string AuthenticateAndVerify(string requestUri, Func<string> requestLogic)
+        {
+            setAuthenticationHeader(requestUri);
+            string returnVal = requestLogic();
+            var anon = new { auth = new SAuthInfo(), transactionid = "" };
+            var json = JsonConvert.DeserializeAnonymousType(returnVal, anon);
+
+            if (!validator.Verify(json.auth, json.transactionid))
+            {
+                throw new Exception("Failed to verify MBills response.");
+            }
+            return returnVal;
+        }
+
+        private void setAuthenticationHeader(string url)
+        {
+            httpClient.DefaultRequestHeaders.Authorization = authGen.getAuthenticationHeaderValue(url);
+        }
+
+        private async Task<string> simpleGet(string url) {
+            setAuthenticationHeader(url);
+
+            string response = await httpClient.GetStringAsync(url);
+            return response;
+        }
+        #endregion
+    }
+}
