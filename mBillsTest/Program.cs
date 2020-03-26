@@ -17,7 +17,7 @@ namespace mBillsTest
         static string secretKey = "example-secretkey";
         static string publicKeyFile = "mbills-server-public-key.txt";
         static string workingDirectory = @"C:\Users\Kristijan\Desktop\playground\mBillsTest";
-        static MBillsAPICaller api;
+        static MBillsAPIFacade api;
 
         // logic
         static void Main(string[] args)

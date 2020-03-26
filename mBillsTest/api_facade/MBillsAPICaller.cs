@@ -18,7 +18,7 @@ namespace mBillsTest
     APICalls's public methods will call the mBills API. At instantiation, it also knows by itself how to set the authorization
     headers for the calls.
     */
-    public class MBillsAPICaller
+    public class MBillsAPIFacade
     {
         string apiRootPath = "";
         MBillsAuthHeaderGenerator authGen;
@@ -28,7 +28,7 @@ namespace mBillsTest
         string qrGenPath = "https://qr.mbills.si/qrPng/{0}";
 
 
-        public MBillsAPICaller(string apiRootPath, string apiKey, string secretKey, string publicKeyPath) {
+        public MBillsAPIFacade(string apiRootPath, string apiKey, string secretKey, string publicKeyPath) {
             authGen = new MBillsAuthHeaderGenerator(apiKey, secretKey);
             httpClient = new HttpClient();
             validator = new MBillsSignatureValidator(publicKeyPath, apiKey);
@@ -49,12 +49,12 @@ namespace mBillsTest
             return simpleGet(this.apiRootPath + "/API/v1/system/testwebhook").GetAwaiter().GetResult();
         }
 
-        public SSaleResponse testSale(string documentId = "") {
+        public SSaleResponse testSale(int amountInCents, string documentId = "") {
             string requestUri = this.apiRootPath + "/API/v1/transaction/sale";
             setAuthenticationHeader(requestUri);
             
 
-            SSaleRequest req = new SSaleRequest(100, orderid: "124134986h", channelid: "eshop1", paymentreference: "SI0015092015");
+            SSaleRequest req = new SSaleRequest(amountInCents, orderid: "124134986h", channelid: "eshop1", paymentreference: "SI0015092015");
             if (documentId != "")
                 req.documentid = documentId;
             string json = JsonConvert.SerializeObject(req);
@@ -73,6 +73,8 @@ namespace mBillsTest
 
             return SaleResponse;
         }
+
+        // Make Sale method where you input receipt
 
         public void getQRCode(string tokennumber) {
             
@@ -110,8 +112,45 @@ Content-Transfer-Encoding: base64
             return anon.documentId;
         }
 
-        public SSaleResponse saleQuickPos(float price, string usertokenid, string documentid) {
-            return null;
+        public ETransactionStatus getTransactionStatus(string transactionId) {
+            string requestUri = this.apiRootPath + $"/API/v1/transaction/{transactionId}/status";
+            setAuthenticationHeader(requestUri);
+
+            var response = httpClient.GetAsync(requestUri).GetAwaiter().GetResult();
+            var cont = response.Content.ReadAsStringAsync().GetAwaiter().GetResult();
+            var anon = new { status = "" };
+            string status = JsonConvert.DeserializeAnonymousType(cont, anon).status;
+            return TransactionStatus.FromString(status);
+        }
+
+        public ETransactionStatus Capture(string transactionid, int amountInCents, string message = "") {
+            string requestUri = this.apiRootPath + $"/API/v1/transaction/{transactionid}/capture";
+            setAuthenticationHeader(requestUri);
+
+            var anon = new { amount = amountInCents, currency = "EUR", message = message };
+            string serialized = JsonConvert.SerializeObject(anon);
+            StringContent content = new StringContent(serialized, System.Text.Encoding.Default, "application/json");
+
+            var resp = httpClient.PutAsync(requestUri, content).GetAwaiter().GetResult();
+            string con = resp.Content.ReadAsStringAsync().GetAwaiter().GetResult();
+            var some = new { status = "" };
+            string val = JsonConvert.DeserializeAnonymousType(con, some).status;
+            return TransactionStatus.FromString(val);
+        }
+
+         public ETransactionStatus Void(string transactionid, string message = "") {
+            string requestUri = this.apiRootPath + $"/API/v1/transaction/{transactionid}/void";
+            setAuthenticationHeader(requestUri);
+
+            var anon = new { message = message };
+            string serialized = JsonConvert.SerializeObject(anon);
+            StringContent content = new StringContent(serialized, System.Text.Encoding.Default, "application/json");
+
+            var resp = httpClient.PutAsync(requestUri, content).GetAwaiter().GetResult();
+            string con = resp.Content.ReadAsStringAsync().GetAwaiter().GetResult();
+            var some = new { status = "" };
+            string val = JsonConvert.DeserializeAnonymousType(con, some).status;
+            return TransactionStatus.FromString(val);
         }
 
         #region [auxiliary]

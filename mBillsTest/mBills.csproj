@@ -54,19 +54,18 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="MBillsAPICaller.cs" />
-    <Compile Include="MBillsAuthHeaderGenerator.cs" />
-    <Compile Include="MBillsSignatureValidator.cs" />
+    <Compile Include="api_facade\MBillsAPICaller.cs" />
+    <Compile Include="api_facade\MBillsAuthHeaderGenerator.cs" />
+    <Compile Include="api_facade\MBillsSignatureValidator.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="QrPictureRetriever.cs" />
-    <Compile Include="structs\SSalePosRequest.cs" />
-    <Compile Include="structs\SSaleResponse.cs" />
-    <Compile Include="structs\SAuthInfo.cs" />
-    <Compile Include="structs\SAuthResponse.cs" />
-    <Compile Include="structs\SSaleRequest.cs" />
+    <Compile Include="api_facade\structs\SSalePosRequest.cs" />
+    <Compile Include="api_facade\structs\SSaleResponse.cs" />
+    <Compile Include="api_facade\structs\SAuthInfo.cs" />
+    <Compile Include="api_facade\structs\SAuthResponse.cs" />
+    <Compile Include="api_facade\structs\SSaleRequest.cs" />
+    <Compile Include="api_facade\TransactionStatus.cs" />
     <Compile Include="TimeUtils.cs" />
-    <Compile Include="TransactionStatus.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config">

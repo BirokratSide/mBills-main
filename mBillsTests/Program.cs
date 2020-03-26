@@ -9,6 +9,7 @@ using mBillsTest;
 using mBillsTest.structs;
 
 using Newtonsoft.Json;
+using System.Threading;
 
 namespace mBillsTests
 {
@@ -24,7 +25,7 @@ namespace mBillsTests
             string publicKeyPath = GAppSettings.Get("TEST_PUBLICKEYFILEPATH");
 
             // authenticate to the API
-            MBillsAPICaller api = new MBillsAPICaller(endpoint, apiKey, secretKey, publicKeyPath);
+            MBillsAPIFacade api = new MBillsAPIFacade(endpoint, apiKey, secretKey, publicKeyPath);
             SAuthResponse response = api.testConnection();
             Console.WriteLine("Response transaction ID: {0}", response.transactionId);
 
@@ -35,14 +36,33 @@ namespace mBillsTests
             // upload bill and POS sale
             string docid = api.uploadDocument(File.ReadAllText(GAppSettings.Get("RESOURCES_DIRECTORY") + @"\bill.xml"));
 
+            int amount = 100;
+
             // start a sale
-            SSaleResponse resp = api.testSale(docid);
+            SSaleResponse resp = api.testSale(100, docid);
             Console.WriteLine(JsonConvert.SerializeObject(resp));
 
             // qr code
             api.getQRCode(resp.paymenttokennumber.ToString());
 
-            // upload bill and POS sale
+            while (true) {
+                ETransactionStatus status = api.getTransactionStatus(resp.transactionid);
+
+                if (status == ETransactionStatus.Authorized) {
+                    Console.WriteLine("");
+                    //status = api.Capture(resp.transactionid, amount, "Thank you for shopping with us!");
+                    status = api.Void(resp.transactionid, "Sorry, but you stink so we won't do business with you!");
+                }
+                if (status == ETransactionStatus.Paid) {
+                    break;
+                }
+                if (status == ETransactionStatus.Voided) {
+                    break;
+                }
+
+                
+                Thread.Sleep(3000);
+            }
 
             Console.ReadLine();
         }
