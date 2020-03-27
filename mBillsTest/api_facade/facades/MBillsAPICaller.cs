@@ -119,6 +119,43 @@ namespace mBillsTest
             return TransactionStatus.FromString(val);
         }
 
+        public ETransactionStatus Refund(string transactionid, int amount, string currency) {
+
+            int balance = WalletBalance();
+            if (balance < amount)
+            {
+                throw new Exception("You don't have enough balance on your account to make this refund!");
+            }
+            else {
+                string requestUri = this.apiRootPath + $"/API/v1/transaction/{transactionid}/refund";
+                string result = authenticator.AuthenticateAndVerify(requestUri, () =>
+                {
+                    var anon = new { amount = amount, currency = currency };
+                    string serialized = JsonConvert.SerializeObject(anon);
+                    StringContent content = new StringContent(serialized, System.Text.Encoding.Default, "application/json");
+
+                    var resp = httpClient.PostAsync(requestUri, content).GetAwaiter().GetResult();
+                    string con = resp.Content.ReadAsStringAsync().GetAwaiter().GetResult();
+                    return con;
+                });
+
+                var some = new { status = "" };
+                string val = JsonConvert.DeserializeAnonymousType(result, some).status;
+                return TransactionStatus.FromString(val);
+            }
+        }
+
+        public int WalletBalance() {
+            string requestUrl = this.apiRootPath + "/API/v1/wallet/balance";
+            string result = authenticator.AuthenticateAndVerify(requestUrl, () =>
+            {
+                return httpClient.GetStringAsync(requestUrl).GetAwaiter().GetResult();
+            });
+            var some = new { amount = 0 };
+            int balance = JsonConvert.DeserializeAnonymousType(result, some).amount;
+            return balance;
+        }
+
         public void getQRCode(string tokennumber, string path_to_save_qr)
         {
             string addr = string.Format(qrGenPath, tokennumber);
