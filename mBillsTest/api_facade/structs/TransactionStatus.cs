@@ -16,6 +16,14 @@ namespace mBillsTest.structs
         {
             return (ETransactionStatus)a;
         }
+
+        public static string ToDatabaseStatus(ETransactionStatus status) {
+            return Enum.GetName(typeof(ETransactionStatus), status);
+        }
+
+        public static ETransactionStatus FromDatabaseStatus(string status) {
+            return (ETransactionStatus) Enum.Parse(typeof(ETransactionStatus), status);
+        }
     }
 
     public enum ETransactionStatus {

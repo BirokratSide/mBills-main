@@ -20,14 +20,11 @@ namespace mBillsTests
         static void Main(string[] args)
         {
             Directory.SetCurrentDirectory(GAppSettings.Get("WORKING_DIRECTORY", ""));
-            string endpoint = GAppSettings.Get("TEST_ENDPOINT");
-
-            mBillsDatabase db = new mBillsDatabase();
-            Environment.Exit(1);
+            
 
 
             // authenticate to the API
-            MBillsAPIFacade api = new MBillsAPIFacade(endpoint);
+            MBillsAPIFacade api = new MBillsAPIFacade();
             SAuthResponse response = api.testConnection();
             Console.WriteLine("Response transaction ID: {0}", response.transactionId);
             
@@ -41,7 +38,7 @@ namespace mBillsTests
             Console.WriteLine(JsonConvert.SerializeObject(resp));
 
             // qr code
-            api.getQRCode(resp.paymenttokennumber.ToString());
+            api.getQRCode(resp.paymenttokennumber.ToString(), "temp.jpg");
 
             while (true) {
                 ETransactionStatus status = api.GetTransactionStatus(resp.transactionid);

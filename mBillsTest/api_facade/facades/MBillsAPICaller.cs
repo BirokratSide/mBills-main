@@ -13,6 +13,7 @@ using mBillsTest.structs;
 using System.Drawing;
 using mBillsTest.api_facade.structs;
 using mBillsTest.api_facade.security;
+using mBillsTests;
 
 namespace mBillsTest
 {
@@ -27,10 +28,11 @@ namespace mBillsTest
         string qrGenPath = "https://qr.mbills.si/qrPng/{0}";
 
 
-        public MBillsAPIFacade(string apiRootPath) {
+        public MBillsAPIFacade() {
             httpClient = new HttpClient();
             authenticator = new MBillsAuthenticator(httpClient);
-            this.apiRootPath = apiRootPath;
+            this.apiRootPath = GAppSettings.Get("TEST_ENDPOINT", null);
+            if (this.apiRootPath == null) throw new Exception("TEST_ENDPOINT variable was not defined in the configuration file");
         }
 
         #region [api methods]
@@ -117,13 +119,13 @@ namespace mBillsTest
             return TransactionStatus.FromString(val);
         }
 
-        public void getQRCode(string tokennumber)
+        public void getQRCode(string tokennumber, string path_to_save_qr)
         {
             string addr = string.Format(qrGenPath, tokennumber);
             HttpClient clnt = new HttpClient();
             HttpResponseMessage msg = clnt.GetAsync(addr).GetAwaiter().GetResult();
             Stream srm = msg.Content.ReadAsStreamAsync().GetAwaiter().GetResult();
-            Image.FromStream(srm).Save(@"C:\Users\km\Desktop\playground\birokrat\mBills-main\some.jpg");
+            Image.FromStream(srm).Save(path_to_save_qr);
         }
 
         public SAuthResponse testConnection()
