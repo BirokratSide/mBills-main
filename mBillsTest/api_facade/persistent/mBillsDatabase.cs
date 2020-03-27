@@ -14,14 +14,9 @@ namespace mBillsTest.api_facade.persistent
         string table_name = "MBillsTransaction";
         MBillsContext context;
 
-        public mBillsDatabase()
+        public mBillsDatabase(string sql_conn_string)
         {
-            string db_conn_string = "Data Source=DESKTOP-NBRF35K\\SQLEXPRESS;" +
-                                    "Initial Catalog=biroside;" +
-                                    "User id=turizem;" +
-                                    "Password=q;" +
-                                    "Integrated security=False;";
-            MBillsContext context = new MBillsContext(db_conn_string);
+            MBillsContext context = new MBillsContext(sql_conn_string);
         }
 
         public void InsertRecord(SMBillsTransaction trans)

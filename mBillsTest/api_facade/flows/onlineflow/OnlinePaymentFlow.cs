@@ -14,9 +14,9 @@ namespace mBillsTest.api_facade.flows.states
         public OnlinePaymentFlow() {
         }
 
-        public void Construct()
+        public void Construct(string sql_conn_string)
         {
-            mBillsDatabase database = new mBillsDatabase();
+            mBillsDatabase database = new mBillsDatabase(sql_conn_string);
             MBillsAPIFacade api = new MBillsAPIFacade();
             state = new flows.EntrypointState(api, database, this);
         }

@@ -69,16 +69,22 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="api_facade\facades\MBillsAPICaller.cs" />
-    <Compile Include="api_facade\persistent\CMsSqlConnection.cs" />
-    <Compile Include="api_facade\persistent\GConv.cs" />
+    <Compile Include="api_facade\api_weapper\MBillsAPIFacade.cs" />
+    <Compile Include="api_facade\flows\onlineflow\IOnlinePaymentFlowState.cs" />
+    <Compile Include="api_facade\flows\onlineflow\states\AcceptedState.cs" />
+    <Compile Include="api_facade\flows\onlineflow\states\AuthorizedState.cs" />
+    <Compile Include="api_facade\flows\onlineflow\BaseState.cs" />
+    <Compile Include="api_facade\flows\onlineflow\states\PaidState.cs" />
+    <Compile Include="api_facade\flows\onlineflow\states\EntrypointState.cs" />
+    <Compile Include="api_facade\flows\onlineflow\OnlinePaymentFlow.cs" />
+    <Compile Include="api_facade\flows\onlineflow\states\VoidedState.cs" />
     <Compile Include="api_facade\persistent\MBillsContext.cs" />
     <Compile Include="api_facade\persistent\mBillsDatabase.cs" />
     <Compile Include="api_facade\persistent\SMBillsTransaction.cs" />
-    <Compile Include="api_facade\security\MBillsAuthenticator.cs" />
+    <Compile Include="api_facade\api_weapper\security\MBillsAuthenticator.cs" />
     <Compile Include="api_facade\structs\XmlBillTemplate.cs" />
-    <Compile Include="api_facade\security\MBillsAuthHeaderGenerator.cs" />
-    <Compile Include="api_facade\security\MBillsSignatureValidator.cs" />
+    <Compile Include="api_facade\api_weapper\security\MBillsAuthHeaderGenerator.cs" />
+    <Compile Include="api_facade\api_weapper\security\MBillsSignatureValidator.cs" />
     <Compile Include="GAppSettings.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="api_facade\structs\SSalePosRequest.cs" />
@@ -98,9 +104,7 @@
   <ItemGroup>
     <WCFMetadata Include="Connected Services\" />
   </ItemGroup>
-  <ItemGroup>
-    <Folder Include="api_facade\flows\" />
-  </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <Target Name="EnsureNuGetPackageBuildImports" BeforeTargets="PrepareForBuild">
     <PropertyGroup>
