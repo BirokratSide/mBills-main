@@ -1,4 +1,5 @@
-﻿using mBillsTest.api_facade.persistent;
+﻿using mBillsTest.api_facade.flows.states;
+using mBillsTest.api_facade.persistent;
 using mBillsTest.structs;
 using System;
 using System.Collections.Generic;
@@ -6,16 +7,16 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace mBillsTest.api_facade.flows.states
+namespace mBillsTest.api_facade.flows.onlineflow.states
 {
-    public class PaidState : BaseState, IOnlinePaymentFlowState
+    public class VoidedState : BaseState, IOnlinePaymentFlowState
     {
         public MBillsAPIFacade api { get; set; }
         public mBillsDatabase database { get; set; }
         public SMBillsTransaction current_transaction { get; set; }
         public OnlinePaymentFlow flow;
 
-        public PaidState(IOnlinePaymentFlowState state, OnlinePaymentFlow flow)
+        public VoidedState(IOnlinePaymentFlowState state, OnlinePaymentFlow flow)
         {
             this.api = state.api;
             this.database = state.database;
@@ -32,7 +33,12 @@ namespace mBillsTest.api_facade.flows.states
 
         public bool RefreshCurrentTransaction()
         {
-            return base.RefreshTransaction();
+            ETransactionStatus status = api.GetTransactionStatus(current_transaction.Transaction_id);
+            if (TransactionStatus.FromDatabaseStatus(current_transaction.Status) != status)
+            {
+                throw new Exception("The transaction has changed its state from a Voided state. Something is very wrong. Better contact mBills support.");
+            }
+            return true;
         }
 
         public SMBillsTransaction GetCurrentTransaction()
@@ -47,11 +53,7 @@ namespace mBillsTest.api_facade.flows.states
 
         public bool StornoCurrentTransaction()
         {
-            ETransactionStatus status = api.Refund(current_transaction.Transaction_id, current_transaction.Amount_in_cents, "EUR");
-            current_transaction.Status = TransactionStatus.ToDatabaseStatus(status);
-            database.UpdateTransaction(current_transaction);
-            flow.state = GetCorrespondingState(status, this);
-            return true;
+            return false;
         }
 
         public bool ClearCurrentTransaction()

@@ -36,7 +36,11 @@ namespace mBillsTest.api_facade.flows.states
             try
             {
                 ETransactionStatus status = state.api.GetTransactionStatus(state.current_transaction.Transaction_id);
-                flow.state = GetCorrespondingState(status, state);
+                if (TransactionStatus.FromDatabaseStatus(state.current_transaction.Status) != status) {
+                    state.current_transaction.Status = TransactionStatus.ToDatabaseStatus(status);
+                    state.database.UpdateTransaction(state.current_transaction);
+                    flow.state = GetCorrespondingState(status, state);
+                }
                 return true;
             }
             catch (Exception ex)
@@ -45,5 +49,19 @@ namespace mBillsTest.api_facade.flows.states
             }
         }
 
+        protected bool VoidTransaction() {
+            ETransactionStatus status = state.api.Void(state.current_transaction.Transaction_id, "Your payment reservation has been cancelled!");
+            if (status == ETransactionStatus.Voided)
+            {
+                state.current_transaction.Status = TransactionStatus.ToDatabaseStatus(status);
+                state.database.UpdateTransaction(state.current_transaction);
+                flow.state = GetCorrespondingState(status, state);
+                return true;
+            }
+            else
+            {
+                return false;
+            }
+        }
     }
 }

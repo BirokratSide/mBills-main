@@ -45,7 +45,7 @@ namespace mBillsTest.api_facade.flows.states
 
         public bool StornoCurrentTransaction()
         {
-            return false; // can perhaps storno with a void?
+            return VoidTransaction();
         }
 
         public bool ClearCurrentTransaction()

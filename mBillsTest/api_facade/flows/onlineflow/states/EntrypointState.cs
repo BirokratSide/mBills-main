@@ -9,38 +9,28 @@ using System.Threading.Tasks;
 
 namespace mBillsTest.api_facade.flows
 {
-    public class NullState : BaseState, IOnlinePaymentFlowState
+    public class EntrypointState : BaseState, IOnlinePaymentFlowState
     {
         public MBillsAPIFacade api { get; set; }
         public mBillsDatabase database { get; set; }
         public SMBillsTransaction current_transaction { get; set; }
         public OnlinePaymentFlow flow;
 
-        public NullState(IOnlinePaymentFlowState state, OnlinePaymentFlow flow) {
+        public EntrypointState(IOnlinePaymentFlowState state, OnlinePaymentFlow flow)
+        {
             this.api = state.api;
             this.database = state.database;
             this.current_transaction = null;
             this.flow = flow;
-
-            current_transaction = database.GetLastTransaction();
-            if (current_transaction != null) {
-                flow.state = GetCorrespondingState(TransactionStatus.FromDatabaseStatus(current_transaction.Status), state);
-            }
+            LoadLastTransaction(flow);
         }
-
-        public NullState(MBillsAPIFacade api, mBillsDatabase database, OnlinePaymentFlow flow) {
+        public EntrypointState(MBillsAPIFacade api, mBillsDatabase database, OnlinePaymentFlow flow) {
             this.api = api;
             this.database = database;
             current_transaction = null;
             this.flow = flow;
-
-            current_transaction = database.GetLastTransaction();
-            if (current_transaction != null)
-            {
-                flow.state = GetCorrespondingState(TransactionStatus.FromDatabaseStatus(current_transaction.Status), this);
-            }            
+            LoadLastTransaction(flow);
         }
-
 
         #region [IOnlinePaymentFlowState]
         public bool StartSale(int amount, string path_to_save_qr) {
@@ -85,6 +75,18 @@ namespace mBillsTest.api_facade.flows
 
         public bool ClearCurrentTransaction() {
             return false;
+        }
+        #endregion
+
+        #region [auxiliary]
+        private void LoadLastTransaction(OnlinePaymentFlow flow)
+        {
+            SMBillsTransaction last_transaction = database.GetLastTransaction();
+            if (current_transaction != null || TransactionStatus.FromDatabaseStatus(current_transaction.Status) == ETransactionStatus.Paid)
+            {
+                current_transaction = last_transaction;
+                flow.state = GetCorrespondingState(TransactionStatus.FromDatabaseStatus(current_transaction.Status), this);
+            }
         }
         #endregion
     }

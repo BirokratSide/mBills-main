@@ -18,7 +18,7 @@ namespace mBillsTest.api_facade.flows.states
         {
             mBillsDatabase database = new mBillsDatabase();
             MBillsAPIFacade api = new MBillsAPIFacade();
-            state = new flows.NullState(api, database, null, this);
+            state = new flows.EntrypointState(api, database, this);
         }
 
         #region [IOnlinePaymentFlowState]
@@ -27,9 +27,9 @@ namespace mBillsTest.api_facade.flows.states
             return state.ClearCurrentTransaction();
         }
         
-        public void StartSale()
+        public bool StartSale(int amount, string path_to_qr)
         {
-            state.StartSale();
+            return state.StartSale(amount, path_to_qr);
         }
 
         public SMBillsTransaction GetCurrentTransaction()

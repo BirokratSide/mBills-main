@@ -51,14 +51,15 @@ namespace mBillsTest.api_facade.flows.states
                 flow.state = GetCorrespondingState(status, this);
                 return true;
             }
-            else {
+            else
+            {
                 return false;
             }
         }
 
         public bool StornoCurrentTransaction()
         {
-            return false;
+            return VoidTransaction();
         }
 
         public bool ClearCurrentTransaction()
