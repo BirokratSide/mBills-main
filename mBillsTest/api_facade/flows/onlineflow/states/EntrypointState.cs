@@ -9,7 +9,7 @@ using System.Threading.Tasks;
 
 namespace mBillsTest.api_facade.flows
 {
-    public class EntrypointState : IOnlinePaymentFlowState
+    internal class EntrypointState : IOnlinePaymentFlowState
     {
         public MBillsAPIFacade api { get; set; }
         public mBillsDatabase database { get; set; }

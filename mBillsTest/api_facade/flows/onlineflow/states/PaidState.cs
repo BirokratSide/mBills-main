@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 
 namespace mBillsTest.api_facade.flows.states
 {
-    public class PaidState : IOnlinePaymentFlowState
+    internal class PaidState : IOnlinePaymentFlowState
     {
         public MBillsAPIFacade api { get; set; }
         public mBillsDatabase database { get; set; }

@@ -10,7 +10,7 @@ using System.Threading.Tasks;
 namespace mBillsTest.api_facade.flows.states
 {
 
-    public static class StateHelper
+    internal static class StateHelper
     {   
 
         public static IOnlinePaymentFlowState GetCorrespondingState(string status, IOnlinePaymentFlowState state)

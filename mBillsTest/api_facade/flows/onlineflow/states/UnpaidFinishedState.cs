@@ -9,7 +9,7 @@ using System.Threading.Tasks;
 
 namespace mBillsTest.api_facade.flows.onlineflow.states
 {
-    public class UnpaidFinishedState : IOnlinePaymentFlowState
+    internal class UnpaidFinishedState : IOnlinePaymentFlowState
     {
         /*
         Voided, InsufficientFunds, AmountTooBig, AmountTooLow, Rejected, TimeOut will all map to this state

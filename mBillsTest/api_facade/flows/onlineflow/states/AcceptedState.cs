@@ -8,7 +8,7 @@ using mBillsTest.structs;
 
 namespace mBillsTest.api_facade.flows.states
 {
-    class AcceptedState : IOnlinePaymentFlowState
+    internal class AcceptedState : IOnlinePaymentFlowState
     {
         public MBillsAPIFacade api { get; set; }
         public mBillsDatabase database { get; set; }
