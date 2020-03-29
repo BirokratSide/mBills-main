@@ -19,7 +19,7 @@ namespace mBillsTest.api_facade.flows.states
         {
             this.api = state.api;
             this.database = state.database;
-            this.current_transaction = null;
+            this.current_transaction = state.current_transaction;
             this.flow = flow;
         }
 
@@ -32,7 +32,7 @@ namespace mBillsTest.api_facade.flows.states
 
         public bool RefreshCurrentTransaction()
         {
-            return base.RefreshTransaction();
+            return StateHelper.RefreshTransaction(this);
         }
 
         public SMBillsTransaction GetCurrentTransaction()
@@ -50,14 +50,13 @@ namespace mBillsTest.api_facade.flows.states
             ETransactionStatus status = api.Refund(current_transaction.Transaction_id, current_transaction.Amount_in_cents, "EUR");
             current_transaction.Status = TransactionStatus.ToDatabaseStatus(status);
             database.UpdateTransaction(current_transaction);
-            flow.state = GetCorrespondingState(status, this);
+            flow.state = StateHelper.GetCorrespondingState(this,status);
             return true;
         }
 
         public bool ClearCurrentTransaction()
         {
-            current_transaction = null;
-            flow.state = new EntrypointState(api, database, flow);
+            StateHelper.ClearTransaction(this);
             return false;
         }
         #endregion

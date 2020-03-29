@@ -41,6 +41,7 @@ namespace mBillsTests
 
             flow.StartSale(300, path_to_qr);
             while (TransactionStatus.FromDatabaseStatus(flow.GetCurrentTransaction().Status) != ETransactionStatus.Authorized) {
+                flow.RefreshCurrentTransaction();
                 Thread.Sleep(1000);
             }
             flow.FinishCurrentTransaction("krena stevilka");

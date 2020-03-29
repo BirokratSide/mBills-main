@@ -73,11 +73,11 @@
     <Compile Include="api_facade\flows\onlineflow\IOnlinePaymentFlowState.cs" />
     <Compile Include="api_facade\flows\onlineflow\states\AcceptedState.cs" />
     <Compile Include="api_facade\flows\onlineflow\states\AuthorizedState.cs" />
-    <Compile Include="api_facade\flows\onlineflow\BaseState.cs" />
+    <Compile Include="api_facade\flows\onlineflow\StateHelper.cs" />
     <Compile Include="api_facade\flows\onlineflow\states\PaidState.cs" />
     <Compile Include="api_facade\flows\onlineflow\states\EntrypointState.cs" />
     <Compile Include="api_facade\flows\onlineflow\OnlinePaymentFlow.cs" />
-    <Compile Include="api_facade\flows\onlineflow\states\VoidedState.cs" />
+    <Compile Include="api_facade\flows\onlineflow\states\UnpaidFinishedState.cs" />
     <Compile Include="api_facade\persistent\MBillsContext.cs" />
     <Compile Include="api_facade\persistent\mBillsDatabase.cs" />
     <Compile Include="api_facade\persistent\SMBillsTransaction.cs" />

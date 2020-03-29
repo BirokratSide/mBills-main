@@ -20,8 +20,8 @@ namespace mBillsTest.api_facade.persistent
         string currency;
         string MPO;
         string biro_stevilka_racuna;
-        DateTime datetime_started;
-        DateTime datetime_finished;
+        DateTime? datetime_started;
+        DateTime? datetime_finished;
 
         public SMBillsTransaction() { }
 
@@ -39,7 +39,7 @@ namespace mBillsTest.api_facade.persistent
         public string Currency { get => currency; set => currency = value; }
         public string MPO1 { get => MPO; set => MPO = value; }
         public string Biro_stevilka_racuna { get => biro_stevilka_racuna; set => biro_stevilka_racuna = value; }
-        public DateTime Datetime_started { get => datetime_started; set => datetime_started = value; }
-        public DateTime Datetime_finished { get => datetime_finished; set => datetime_finished = value; }
+        public DateTime? Datetime_started { get => datetime_started; set => datetime_started = value; }
+        public DateTime? Datetime_finished { get => datetime_finished; set => datetime_finished = value; }
     }
 }

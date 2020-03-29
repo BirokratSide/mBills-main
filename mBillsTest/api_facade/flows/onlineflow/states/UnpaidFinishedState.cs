@@ -24,7 +24,7 @@ namespace mBillsTest.api_facade.flows.onlineflow.states
         {
             this.api = state.api;
             this.database = state.database;
-            this.current_transaction = null;
+            this.current_transaction = state.current_transaction;
             this.flow = flow;
         }
 
