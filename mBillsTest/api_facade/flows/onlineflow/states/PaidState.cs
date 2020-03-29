@@ -8,12 +8,12 @@ using System.Threading.Tasks;
 
 namespace mBillsTest.api_facade.flows.states
 {
-    public class PaidState : BaseState, IOnlinePaymentFlowState
+    public class PaidState : IOnlinePaymentFlowState
     {
         public MBillsAPIFacade api { get; set; }
         public mBillsDatabase database { get; set; }
         public SMBillsTransaction current_transaction { get; set; }
-        public OnlinePaymentFlow flow;
+        public OnlinePaymentFlow flow { get; set; }
 
         public PaidState(IOnlinePaymentFlowState state, OnlinePaymentFlow flow)
         {

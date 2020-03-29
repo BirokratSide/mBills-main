@@ -8,12 +8,12 @@ using System.Threading.Tasks;
 
 namespace mBillsTest.api_facade.flows.states
 {
-    public class AuthorizedState : BaseState, IOnlinePaymentFlowState
+    public class AuthorizedState : IOnlinePaymentFlowState
     {
         public MBillsAPIFacade api { get; set; }
         public mBillsDatabase database { get; set; }
         public SMBillsTransaction current_transaction { get; set; }
-        public OnlinePaymentFlow flow;
+        public OnlinePaymentFlow flow { get; set; }
 
         public AuthorizedState(IOnlinePaymentFlowState state, OnlinePaymentFlow flow)
         {
@@ -32,7 +32,7 @@ namespace mBillsTest.api_facade.flows.states
 
         public bool RefreshCurrentTransaction()
         {
-            return base.RefreshTransaction();
+            return StateHelper.RefreshTransaction(this);
         }
 
         public SMBillsTransaction GetCurrentTransaction()
@@ -45,10 +45,9 @@ namespace mBillsTest.api_facade.flows.states
             ETransactionStatus status = api.Capture(current_transaction.Transaction_id, current_transaction.Amount_in_cents, "Thank you for shopping with us!");
             if (status == ETransactionStatus.Paid)
             {
-                current_transaction.Status = TransactionStatus.ToDatabaseStatus(status);
+                
                 current_transaction.Biro_stevilka_racuna = BiroStevilkaRacuna;
-                database.UpdateTransaction(current_transaction);
-                flow.state = GetCorrespondingState(status, this);
+                StateHelper.PersistAndTransitionState(this, status);
                 return true;
             }
             else
@@ -59,7 +58,7 @@ namespace mBillsTest.api_facade.flows.states
 
         public bool StornoCurrentTransaction()
         {
-            return VoidTransaction();
+            return StateHelper.VoidTransaction(this);
         }
 
         public bool ClearCurrentTransaction()

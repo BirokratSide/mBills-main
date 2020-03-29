@@ -16,7 +16,7 @@ namespace mBillsTest.api_facade.persistent
 
         public mBillsDatabase(string sql_conn_string)
         {
-            MBillsContext context = new MBillsContext(sql_conn_string);
+            context = new MBillsContext(sql_conn_string);
         }
 
         public void InsertRecord(SMBillsTransaction trans)

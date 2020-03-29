@@ -1,4 +1,5 @@
-﻿using mBillsTest.api_facade.persistent;
+﻿using mBillsTest.api_facade.flows.states;
+using mBillsTest.api_facade.persistent;
 
 namespace mBillsTest.api_facade.flows
 {
@@ -8,6 +9,7 @@ namespace mBillsTest.api_facade.flows
         MBillsAPIFacade api { get; set; }
         mBillsDatabase database { get; set; }
         SMBillsTransaction current_transaction { get; set; }
+        OnlinePaymentFlow flow { get; set; }
 
 
         // methods

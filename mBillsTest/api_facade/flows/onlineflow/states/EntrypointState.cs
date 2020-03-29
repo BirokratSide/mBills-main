@@ -9,12 +9,12 @@ using System.Threading.Tasks;
 
 namespace mBillsTest.api_facade.flows
 {
-    public class EntrypointState : BaseState, IOnlinePaymentFlowState
+    public class EntrypointState : IOnlinePaymentFlowState
     {
         public MBillsAPIFacade api { get; set; }
         public mBillsDatabase database { get; set; }
         public SMBillsTransaction current_transaction { get; set; }
-        public OnlinePaymentFlow flow;
+        public OnlinePaymentFlow flow { get; set; }
 
         public EntrypointState(IOnlinePaymentFlowState state, OnlinePaymentFlow flow)
         {
@@ -53,12 +53,12 @@ namespace mBillsTest.api_facade.flows
             api.getQRCode(resp.paymenttokennumber.ToString(), path_to_save_qr);
 
             // change state
-            flow.state = GetCorrespondingState(TransactionStatus.FromInt(resp.status), this);
+            flow.state = StateHelper.GetCorrespondingState(this, TransactionStatus.FromInt(resp.status));
             return true;
         }
 
         public bool RefreshCurrentTransaction() {
-            return base.RefreshTransaction();
+            return StateHelper.RefreshTransaction(this);
         }
 
         public SMBillsTransaction GetCurrentTransaction() {
@@ -82,10 +82,10 @@ namespace mBillsTest.api_facade.flows
         private void LoadLastTransaction(OnlinePaymentFlow flow)
         {
             SMBillsTransaction last_transaction = database.GetLastTransaction();
-            if (current_transaction != null || TransactionStatus.FromDatabaseStatus(current_transaction.Status) == ETransactionStatus.Paid)
-            {
+            if (last_transaction != null && last_transaction.Datetime_finished != null) {
                 current_transaction = last_transaction;
-                flow.state = GetCorrespondingState(TransactionStatus.FromDatabaseStatus(current_transaction.Status), this);
+                ETransactionStatus status = TransactionStatus.FromDatabaseStatus(current_transaction.Status);
+                flow.state = StateHelper.GetCorrespondingState(this, status);
             }
         }
         #endregion

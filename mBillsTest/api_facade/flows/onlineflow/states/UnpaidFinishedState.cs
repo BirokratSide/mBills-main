@@ -9,14 +9,18 @@ using System.Threading.Tasks;
 
 namespace mBillsTest.api_facade.flows.onlineflow.states
 {
-    public class VoidedState : BaseState, IOnlinePaymentFlowState
+    public class UnpaidFinishedState : IOnlinePaymentFlowState
     {
+        /*
+        Voided, InsufficientFunds, AmountTooBig, AmountTooLow, Rejected, TimeOut will all map to this state
+        */
+
         public MBillsAPIFacade api { get; set; }
         public mBillsDatabase database { get; set; }
         public SMBillsTransaction current_transaction { get; set; }
-        public OnlinePaymentFlow flow;
-
-        public VoidedState(IOnlinePaymentFlowState state, OnlinePaymentFlow flow)
+        public OnlinePaymentFlow flow { get; set; }
+        
+        public UnpaidFinishedState(IOnlinePaymentFlowState state, OnlinePaymentFlow flow)
         {
             this.api = state.api;
             this.database = state.database;
@@ -33,12 +37,7 @@ namespace mBillsTest.api_facade.flows.onlineflow.states
 
         public bool RefreshCurrentTransaction()
         {
-            ETransactionStatus status = api.GetTransactionStatus(current_transaction.Transaction_id);
-            if (TransactionStatus.FromDatabaseStatus(current_transaction.Status) != status)
-            {
-                throw new Exception("The transaction has changed its state from a Voided state. Something is very wrong. Better contact mBills support.");
-            }
-            return true;
+            return false; // no reason to refresh a finished transaction
         }
 
         public SMBillsTransaction GetCurrentTransaction()
@@ -58,9 +57,8 @@ namespace mBillsTest.api_facade.flows.onlineflow.states
 
         public bool ClearCurrentTransaction()
         {
-            current_transaction = null;
-            flow.state = new EntrypointState(api, database, flow);
-            return false;
+            StateHelper.ClearTransaction(this);
+            return true;
         }
         #endregion
     }

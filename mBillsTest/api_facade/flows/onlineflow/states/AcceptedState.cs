@@ -8,12 +8,12 @@ using mBillsTest.structs;
 
 namespace mBillsTest.api_facade.flows.states
 {
-    class AcceptedState : BaseState, IOnlinePaymentFlowState
+    class AcceptedState : IOnlinePaymentFlowState
     {
-        public MBillsAPIFacade api { get => throw new NotImplementedException(); set => throw new NotImplementedException(); }
-        public mBillsDatabase database { get => throw new NotImplementedException(); set => throw new NotImplementedException(); }
-        public SMBillsTransaction current_transaction { get => throw new NotImplementedException(); set => throw new NotImplementedException(); }
-        OnlinePaymentFlow flow;
+        public MBillsAPIFacade api { get; set; }
+        public mBillsDatabase database { get; set; }
+        public SMBillsTransaction current_transaction { get; set; }
+        public OnlinePaymentFlow flow { get; set; }
 
         public AcceptedState(IOnlinePaymentFlowState state, OnlinePaymentFlow flow) {
             this.api = state.api;
@@ -30,7 +30,7 @@ namespace mBillsTest.api_facade.flows.states
 
         public bool RefreshCurrentTransaction()
         {
-            return base.RefreshTransaction();
+            return StateHelper.RefreshTransaction(this);
         }
 
         public SMBillsTransaction GetCurrentTransaction()
@@ -45,7 +45,7 @@ namespace mBillsTest.api_facade.flows.states
 
         public bool StornoCurrentTransaction()
         {
-            return VoidTransaction();
+            return StateHelper.VoidTransaction(this);
         }
 
         public bool ClearCurrentTransaction()
