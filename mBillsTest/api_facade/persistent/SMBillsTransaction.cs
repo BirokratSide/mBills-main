@@ -3,11 +3,15 @@ using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Data.Entity;
 using System.Linq;
+using System.Runtime.InteropServices;
 using System.Text;
 using System.Threading.Tasks;
 
 namespace mBillsTest.api_facade.persistent
 {
+    [ComVisible(true)]
+    [Guid("FEC388C3-B8D6-4CE8-A99C-FFB64E9AF292")] // zgeneriraj unique
+    [ClassInterface(ClassInterfaceType.None)]
     public class SMBillsTransaction
     {
         int id;
